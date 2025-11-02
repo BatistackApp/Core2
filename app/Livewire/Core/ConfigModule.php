@@ -3,6 +3,8 @@
 namespace App\Livewire\Core;
 
 use App\Models\Core\Module;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -23,6 +25,11 @@ class ConfigModule extends Component implements HasActions, HasSchemas, HasTable
     public function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Action::make('ordering')
+                    ->label('Commander un nouveau module')
+                    ->url("https://saas.".config('batistack.domain').'/client/account/cart/module')
+            ])
             ->query(Module::query())
             ->columns([
                 TextColumn::make('name')
@@ -54,7 +61,25 @@ class ConfigModule extends Component implements HasActions, HasSchemas, HasTable
                     ->falseColor('danger'),
             ])
             ->recordActions([
-                
+                Action::make('activate')
+                    ->iconButton()
+                    ->tooltip('Activer')
+                    ->icon(Heroicon::OutlinedCheckBadge)
+                    ->color('success')
+                    ->visible(fn (Module $record) => !$record->is_active)
+                    ->action(function (Module $record) {
+                        $record->update(['is_active' => true]);
+                    }),
+
+                Action::make('deactivate')
+                    ->iconButton()
+                    ->tooltip('Désactiver')
+                    ->icon(Heroicon::OutlinedXCircle)
+                    ->color('danger')
+                    ->visible(fn (Module $record) => $record->is_active)
+                    ->action(function (Module $record) {
+                        $record->update(['is_active' => false]);
+                    }),
             ]);
     }
 
