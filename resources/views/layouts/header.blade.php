@@ -5,7 +5,7 @@
     <div class="kt-container-fixed flex items-stretch justify-between lg:gap-4" id="headerContainer">
         <!-- Mobile Logo -->
         <div class="-ms-1 flex items-center gap-2.5 lg:hidden">
-            <a class="shrink-0" href="{{ route('home') }}">
+            <a class="shrink-0" href="{{ route('home') }}" wire:navigate>
                 <img class="max-h-[25px] w-full" src="{{ asset('storage/logos/batistack_seul_color.png') }}" />
             </a>
             <div class="flex items-center">
