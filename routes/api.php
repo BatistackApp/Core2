@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CoreController;
+use App\Http\Controllers\Api\UserController;
+
+Route::prefix('core')->group(function (): void {
+    Route::get('backup-restore', [CoreController::class, 'backupRestore']);
+    Route::get('/storage/info', [CoreController::class, 'storageInfo']);
+});
+
+Route::prefix('users')->group(function (): void {
+    Route::get('/', [UserController::class, 'list']);
+    Route::post('/', [UserController::class, 'create']);
+    Route::get('/{user_id}/password-reset', [UserController::class, 'passwordReset']);
+    Route::put('/{user_id}', [UserController::class, 'update']);
+    Route::delete('/{user_id}', [UserController::class, 'delete']);
+});
+
+Route::get('/status', function () {
+    return response()->json([
+        'status' => 'ok',
+    ]);
+});
