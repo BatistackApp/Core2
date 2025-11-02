@@ -18,7 +18,8 @@
 
                 <!-- Content -->
                 <main class="grow pt-5" id="content" role="content">
-                    {{ $slot }}                    
+                    {{ $slot }}
+                    @livewire('notifications')
                 </main>
                 <!-- End of Content -->
 
@@ -30,7 +31,7 @@
         <!-- End of Page -->
 
         @include('layouts.partials.scripts')
-        @livewire('notifications')
+
         @livewireScripts
     </body>
 </html>

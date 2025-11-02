@@ -9,7 +9,7 @@
             <div class="kt-menu flex-col gap-5 lg:flex-row lg:gap-7.5" data-kt-menu="true" id="mega_menu">
                 <div class="kt-menu-item active">
                     <a class="kt-menu-link kt-menu-item-hover:text-primary kt-menu-item-active:text-mono kt-menu-item-active:font-medium text-nowrap text-sm font-medium text-foreground"
-                        href="html/demo1.html">
+                        href="{{ route('home') }}" wire:navigate>
                         <span class="kt-menu-title text-nowrap">
                             Home
                         </span>
@@ -18,7 +18,7 @@
                 @foreach (App\Models\Core\Module::where('is_active', true)->get() as $module)
                     <div class="kt-menu-item">
                         <a class="kt-menu-link kt-menu-item-hover:text-primary kt-menu-item-active:text-mono kt-menu-item-active:font-medium text-nowrap text-sm font-medium text-foreground"
-                            href="{{ route('module.redirect', ['slug' => $module->slug]) }}">
+                            href="{{ route('module.redirect', ['slug' => $module->slug]) }}" wire:navigate>
                             <span class="kt-menu-title text-nowrap">
                                 {{ $module->name_formated }}
                             </span>
