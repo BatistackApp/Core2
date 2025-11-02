@@ -15,7 +15,7 @@
                         {{ auth()->user()->name }}
                     </span>
                     <a class="hover:text-primary text-xs font-medium leading-none text-secondary-foreground"
-                        href="html/demo1/account/home/get-started.html">
+                        href="{{ route('profil') }}" wire:navigate>
                         {{ auth()->user()->email }}
                     </a>
                 </div>
@@ -28,7 +28,7 @@
                     Version: DEV
                 </span>
             </div>
-            
+
         </div>
         <ul class="kt-dropdown-menu-sub">
             <li>
@@ -36,12 +36,21 @@
                 </div>
             </li>
             <li>
-                <a class="kt-dropdown-menu-link" href="{{ route('profil') }}">
+                <a class="kt-dropdown-menu-link" href="{{ route('profil') }}" wire:navigate>
                     <i class="ki-filled ki-profile-circle">
                     </i>
                     Mon compte
                 </a>
             </li>
+            @if(auth()->user()->isAdmin)
+            <li>
+                <a class="kt-dropdown-menu-link" href="{{ route('profil') }}" wire:navigate>
+                    <i class="ki-filled ki-key">
+                    </i>
+                    Ma Licence
+                </a>
+            </li>
+            @endif
             <li>
                 <div class="kt-dropdown-menu-separator">
                 </div>

@@ -3,11 +3,11 @@
     data-kt-drawer="true" data-kt-drawer-class="kt-drawer kt-drawer-start top-0 bottom-0" id="sidebar">
     <div class="kt-sidebar-header relative hidden shrink-0 items-center justify-between px-3 lg:flex lg:px-6"
         id="sidebar_header">
-        <a class="dark:hidden" href="{{ route('home') }}">
+        <a class="dark:hidden" href="{{ route('home') }}" wire:navigate>
             <img class="default-logo min-h-[15px] w-[100px]" src="{{ asset('storage/logos/batistack_long_color.png') }}" />
             <img class="small-logo min-h-[15px] max-w-[50px]" src="{{ asset('storage/logos/batistack_seul_color.png') }}" />
         </a>
-        <a class="hidden dark:block" href="{{ route('home') }}">
+        <a class="hidden dark:block" href="{{ route('home') }}" wire:navigate>
             <img class="default-logo min-h-[15px] w-[100px]" src="{{ asset('storage/logos/batistack_long_white.png') }}" />
             <img class="small-logo min-h-[15px] max-w-[50px]" src="{{ asset('storage/logos/batistack_seul_color.png') }}" />
         </a>
@@ -29,7 +29,7 @@
                 id="sidebar_menu">
                 <div class="kt-menu-item {{ request()->routeIs('home') ? 'active' : ''}}">
                     <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
-                        href="{{ route('home') }}" tabindex="0">
+                        href="{{ route('home') }}" tabindex="0" wire:navigate>
                         <span class="kt-menu-title text-sm font-medium text-foreground">
                             Tableau de Bord
                         </span>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="kt-menu-item {{ request()->routeIs('config.*') ? 'active' : ''}}">
                     <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
-                        href="{{ route('config.index') }}" tabindex="0">
+                        href="{{ route('config.index') }}" tabindex="0" wire:navigate>
                         <span class="kt-menu-title text-sm font-medium text-foreground">
                             Configuration
                         </span>
@@ -76,7 +76,7 @@
 
         @elseif (request()->routeIs('tiers.*'))
 
-        @endif        
+        @endif
     </div>
 </div>
 <!-- End of Sidebar -->

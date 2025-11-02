@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return Gravatar::get($this->email);
     }
+
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === UserRole::ADMINISTRATEUR;
+    }
 }
