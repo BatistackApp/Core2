@@ -21,6 +21,7 @@
             </div>
             <div class="kt-card-toolbar">
                 {{ $this->deleteUserAction }}
+                <x-filament-actions::modals />
             </div>
         </div>
         <div class="kt-card-content bg-orange-300 py-5">
@@ -34,5 +35,4 @@
             <p>Nous vous recommandons de télécharger vos données avant de continuer si vous souhaitez conserver une copie de vos informations.</p>
         </div>
     </div>
-    <x-filament-actions::modals />
 </div>
