@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Core\Config;
+use App\Livewire\Core\Profil;
 use App\Livewire\Home;
 use App\Models\Core\Module;
 use App\Services\Batistack;
@@ -21,6 +22,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', Home::class)->name('home');
 
     Route::get('/config', Config::class)->name('config.index');
+
+    Route::get('profil', Profil::class)->name('profil');
 
     Route::get('/module/redirect', function (Request $request) {
         $slug = $request->get('slug');
