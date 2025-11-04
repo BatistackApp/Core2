@@ -14,8 +14,8 @@ Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
 Route::get('test', function () {
-    $module = Module::find(2);
-    dd($module->info_module);
+    $ulys = app(\App\Services\UlysConnector::class)->get('account/');
+    dd($ulys);
 });
 
 Route::middleware(['auth'])->group(function () {
