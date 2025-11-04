@@ -24,6 +24,7 @@
         "rap2hpoutre/fast-excel": "^5.6",
         "rawilk/laravel-settings": "*",
         "spatie/laravel-backup": "^9.3",
+        "thibaud-dauce/laravel-notifications-mattermost": "^1.7",
         "wnx/laravel-backup-restore": "^1.7"
     },
     "require-dev": {
