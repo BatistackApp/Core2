@@ -14,8 +14,7 @@ Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
 Route::get('test', function () {
-    $ulys = app(\App\Services\UlysConnector::class)->get('account/');
-    dd($ulys);
+    dd(app(Batistack::class)->get('/license/info', ['license_key' => 'SRV-20251106-JPNXR']));
 });
 
 Route::middleware(['auth'])->group(function () {

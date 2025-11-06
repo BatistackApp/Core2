@@ -9,12 +9,11 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            detectTls: 'core.batistack.test',
         }),
         tailwindcss(),
     ],
     server: {
         cors: true,
-        host: '0.0.0.0',
-        
     },
 });

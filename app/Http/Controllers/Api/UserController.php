@@ -33,17 +33,22 @@ class UserController extends Controller
 
         $password = Str::random(12);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($password),
-            'role' => $validated['role'],
-        ]);
+        try {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($password),
+                'role' => $validated['role'],
+            ]);
 
-        // Notification utilisateur
-        $user->notify(new CreateUserNotification($password));
+            // Notification utilisateur
+            $user->notify(new CreateUserNotification($password));
 
-        return $user->toJson();
+            return $user->toJson();
+        } catch(Exception $ex) {
+            \Log::emergency($ex->getMessage(), ['exception' => $ex]);
+            return response()->setStatusCode(500, 'Erreur de création')->json();
+        }
     }
 
     public function update(Request $request, int $user_id): string
