@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Notifications\Core;
 
+use App\Models\Core\Company;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use ThibaudDauce\Mattermost\Attachment;
+use ThibaudDauce\Mattermost\MattermostChannel;
+use ThibaudDauce\Mattermost\Message as MattermostMessage;
 
 final class BackupRestoreSuccessful extends Notification
 {
@@ -27,7 +31,7 @@ final class BackupRestoreSuccessful extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', MattermostChannel::class];
     }
 
     /**
@@ -40,6 +44,19 @@ final class BackupRestoreSuccessful extends Notification
             ->greeting("Bonjour {$notifiable->name},")
             ->line('La restauration de sauvegarde a été effectuée avec succès.')
             ->line("Merci d'avoir utilisé notre application!");
+    }
+
+    public function toMattermost(object $notifiable): MattermostMessage
+    {
+        return (new MattermostMessage)
+            ->text("Restauration de sauvegarde effectuée avec succès")
+            ->username("Service de Restauration de sauvegarde")
+            ->channel('#Batistack Alerte')
+            ->attachment(function (Attachment $attachment) {
+                $attachment->success()
+                    ->text("Une sauvegarde de l'espace ".config('app.url')." à été restaurée avec succès.")
+                    ->authorName(Company::first()->name);
+            });
     }
 
     /**
