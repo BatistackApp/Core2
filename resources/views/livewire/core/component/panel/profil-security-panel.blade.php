@@ -1,5 +1,5 @@
 <div class="kt-container-fixed">
-    <div class="kt-card">
+    <div class="kt-card mb-5">
         <div class="kt-card-header">
             <div class="kt-card-heading">
                 <h2 class="kt-card-title">{{ __('Two Factor Authentication') }}</h2>
@@ -54,6 +54,21 @@
                 @endif
             </div>
         </div>
+    </div>
+    <div class="kt-card">
+        <form wire:submit="updatePassword">
+            <div class="kt-card-header">
+                <div class="kt-card-heading">
+                    <h2 class="kt-card-title">Mot de passe</h2>
+                </div>
+                <div class="kt-card-toolbar">
+                    <button type="submit" class="kt-btn kt-btn-outline">Sauvegarder</button>
+                </div>
+            </div>
+            <div class="kt-card-content py-1">
+                {{ $this->form }}
+            </div>
+        </form>
     </div>
     <flux:modal
         name="two-factor-setup-modal"
