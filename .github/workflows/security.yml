@@ -931,22 +931,22 @@ jobs:
           echo "=================================="
           echo "🔒 Scan de sécurité terminé avec succès"
 
-    summary:
-      name: 📋 Résumé Sécurité
-      runs-on: ubuntu-latest
-      needs: [ security-deep-scan, dependency-check, security-notifications ]
-      if: always()
-      steps:
-        - name: 📋 Generate security summary
-          run: |
-            echo "## 🔒 Résumé Security Deep Scan" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 🎯 Statut: ${{ needs.security-deep-scan.outputs.security-status == 'success' && '✅ SÉCURISÉ' || '❌ VULNÉRABILITÉS' }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 📊 Détections:" >> $GITHUB_STEP_SUMMARY
-            echo "- **Vulnérabilités critiques**: ${{ needs.security-deep-scan.outputs.critical-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Secrets détectés**: ${{ needs.security-deep-scan.outputs.secrets-found || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Vulnérabilités dépendances**: ${{ needs.dependency-check.outputs.dependency-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 🔍 Type de scan: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
-            echo "### 📅 Exécuté le: $(date)" >> $GITHUB_STEP_SUMMARY
+  summary:
+    name: 📋 Résumé Sécurité
+    runs-on: ubuntu-latest
+    needs: [ security-deep-scan, dependency-check, security-notifications ]
+    if: always()
+    steps:
+      - name: 📋 Generate security summary
+        run: |
+          echo "## 🔒 Résumé Security Deep Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Statut: ${{ needs.security-deep-scan.outputs.security-status == 'success' && '✅ SÉCURISÉ' || '❌ VULNÉRABILITÉS' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Détections:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités critiques**: ${{ needs.security-deep-scan.outputs.critical-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets détectés**: ${{ needs.security-deep-scan.outputs.secrets-found || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités dépendances**: ${{ needs.dependency-check.outputs.dependency-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔍 Type de scan: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 📅 Exécuté le: $(date)" >> $GITHUB_STEP_SUMMARY
