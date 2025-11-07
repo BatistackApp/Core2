@@ -12,6 +12,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -43,7 +44,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                     TextInput::make('name')
                         ->label('Nom de l\'entreprise'),
 
-                    TextInput::make('address')    
+                    TextInput::make('address')
                         ->label('Adresse de l\'entreprise')
                         ->default(fn (?Model $record) => $record->address),
 
@@ -58,7 +59,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                             Select::make('pays')
                                 ->label('Pays')
                                 ->options(Country::query()->pluck('name', 'name')),
-                        ])    
+                        ])
                 ]),
 
             Section::make('Coordonnées')
@@ -71,7 +72,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
                             TextInput::make('fax')
                                 ->label('Fax')
-                                ->tel(),    
+                                ->tel(),
                         ]),
 
                     TextInput::make('email')
@@ -80,9 +81,9 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
                     TextInput::make('web')
                         ->label('Site web')
-                        ->url(),    
+                        ->url(),
                 ]),
-            
+
             Section::make('Informations Fiscales')
                 ->schema([
                     Grid::make(2)
@@ -107,7 +108,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                                     } else {
                                         sweetalert()
                                             ->warning("Veuillez renseigner le SIRET");
-                                    }                               
+                                    }
                                 }),
                             TextInput::make('ape')
                                 ->label('Code APE/NAF'),
@@ -117,8 +118,8 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                         ]),
 
                     TextInput::make('rcs')
-                        ->label('RCS'),                        
-                    
+                        ->label('RCS'),
+
                     Toggle::make('tva')
                         ->label("Dispose d'un numéro de TVA intracommunautaire")
                         ->live(),
@@ -135,7 +136,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                                 ->action(function (Get $get) {
                                     if (!empty($get('num_tva'))) {
                                         $verify = app(VatValidator::class)->isValid($get('num_tva'));
-                                
+
                                         if ($verify) {
                                             sweetalert()
                                                 ->success("Le numéro de TVA est valide");
@@ -147,9 +148,9 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                                         sweetalert()
                                             ->warning("Veuillez renseigner le numéro de TVA");
                                     }
-                                }),  
+                                }),
                         ])
-                ])    
+                ])
         ])
         ->statePath('data')
         ->model($this->company);
@@ -164,6 +165,12 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
         sweetalert()
             ->success("Configuration mise à jour avec succès");
+
+        Notification::make()
+            ->title("Information société")
+            ->body("Les informations de la société ont été mise à jour")
+            ->success()
+            ->sendToDatabase(auth()->user());
     }
     public function render()
     {

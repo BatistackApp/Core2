@@ -2,6 +2,12 @@
 
 namespace App\Livewire\Core\Component\Panel;
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
@@ -11,14 +17,17 @@ use Livewire\Attributes\Validate;
 use Symfony\Component\HttpFoundation\Response;
 use Livewire\Component;
 
-class ProfilSecurityPanel extends Component
+class ProfilSecurityPanel extends Component implements HasSchemas, HasActions
 {
+    use InteractsWithSchemas, InteractsWithActions;
     public bool $twoFactorEnabled;
     public bool $requiresConfirmation;
     public string $qrCodeSvg = '';
     public string $manualSetupKey = '';
     public bool $showModal = false;
     public bool $showVerificationStep = false;
+
+    public ?array $dataPassword = [];
 
     #[Validate('required|string|size:6', onUpdate: false)]
     public string $code = '';
@@ -33,6 +42,46 @@ class ProfilSecurityPanel extends Component
 
         $this->twoFactorEnabled = auth()->user()->hasEnabledTwoFactorAuthentication();
         $this->requiresConfirmation = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm');
+        $this->form->fill();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->statePath('dataPassword')
+            ->components([
+                TextInput::make('current_password')
+                    ->label("Mot de passe actuel")
+                    ->password()
+                    ->revealable(),
+
+                TextInput::make('new_password')
+                    ->label("Nouveau mot de passe")
+                    ->password()
+                    ->revealable(),
+
+                TextInput::make('confirm_password')
+                    ->label("Confirmation du mot de passe")
+                    ->password()
+                    ->revealable(),
+            ]);
+    }
+
+    public function updatePassword()
+    {
+        $data = $this->form->getState();
+        $user = \Auth::user();
+
+        if($data['new_password'] !== $data['confirm_password']) {
+            \Flasher\Prime\flash()->error("Les mots de passe ne correspondent pas");
+            return;
+        }
+
+        $user->update([
+            "password" => \Hash::make($data['new_password'])
+        ]);
+
+        \Flasher\Prime\flash()->success("Mot de passe modifié avec succès");
     }
 
     /**

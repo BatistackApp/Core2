@@ -133,7 +133,7 @@ class InstallApp extends Command
             Module::query()->updateOrCreate(['slug' => Str::replace('module-', '', (string) $module['feature']['slug'])], [
                 'name' => $module['feature']['name'],
                 'is_active' => $module['is_active'],
-                'img_url' => "//saas.".config('batistack.domain').$module['feature']['media'],
+                'img_url' => $module['feature']['media'],
                 'description' => $module['feature']['description'] ?? '',
             ]);
             // Lancement du seeder si disponible

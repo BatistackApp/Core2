@@ -23,9 +23,7 @@
         @include('livewire.shared.mega-menu')
         <!-- Topbar -->
         <div class="flex items-center gap-2.5">
-            @include('livewire.shared.topbar-search-modal')
             @include('livewire.shared.topbar-notification-dropdown')
-            @include('livewire.shared.topbar-chat')
             @include('livewire.shared.topbar-user-dropdown')
         </div>
         <!-- End of Topbar -->

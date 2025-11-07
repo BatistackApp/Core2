@@ -14,8 +14,7 @@ Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
 Route::get('test', function () {
-    $module = Module::find(2);
-    dd($module->info_module);
+    dd(app(Batistack::class)->get('/license/info', ['license_key' => 'SRV-20251106-JPNXR']));
 });
 
 Route::middleware(['auth'])->group(function () {
