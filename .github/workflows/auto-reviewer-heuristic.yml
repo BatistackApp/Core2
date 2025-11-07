@@ -1,0 +1,212 @@
+name: Auto Review Laravel (Heuristics + Content)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        # Pas besoin de fetch-depth: 0, listFiles s'en charge
+
+      - name: Auto Review Laravel
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // ==========================================================
+            // 🔍 Fonction d'analyse (DOIT ÊTRE DÉFINIE EN PREMIER)
+            // ==========================================================
+            function analyzePR(files) {
+              const result = {
+                fileCount: files.length,
+                hasLivewireChanges: false,
+                hasLivewireTests: false,
+                hasFilamentChanges: false,
+                hasFilamentTests: false,
+                hasMigrations: false,
+                hasModelChanges: false,
+                hasFactoryUpdates: false,
+                hasEnvExampleUpdates: false,
+                largePR: files.length > 15, // Un peu plus permissif
+                positiveAspects: [],
+                criticalIssues: [],
+                leftoverDebug: [] // NOUVEAU: Pour dd(), dump(), ray()
+              };
+
+              let testFiles = [];
+
+              files.forEach(file => {
+                const filename = file.filename;
+                const status = file.status;
+                const patch = file.patch || ''; // Patch contient les lignes modifiées
+
+                // --- 1. Analyse de contenu (Debug) ---
+                // On ne vérifie que les fichiers PHP et Blade
+                if (filename.endsWith('.php') || filename.endsWith('.blade.php')) {
+                  const addedLines = patch.split('\n').filter(line => line.startsWith('+'));
+
+                  addedLines.forEach(line => {
+                    // Regex pour trouver dd, dump, ray (avec \b pour dd)
+                    if (line.match(/\bdd\(|dump\(|ray\(/)) {
+                      // Ignorer si c'est en commentaire
+                      const trimmedLine = line.substring(1).trim(); // Enlève le '+'
+                      if (!trimmedLine.startsWith('//') && !trimmedLine.startsWith('*')) {
+                        result.leftoverDebug.push(
+                          `**${filename}**: \`${trimmedLine.substring(0, 80)}\`...`
+                        );
+                      }
+                    }
+                  });
+                }
+
+                // --- 2. Analyse par nom de fichier (votre logique) ---
+
+                // Livewire
+                if (filename.startsWith('app/Livewire/')) {
+                  result.hasLivewireChanges = true;
+                }
+
+                // Filament
+                if (filename.startsWith('app/Filament/')) {
+                  result.hasFilamentChanges = true;
+                }
+
+                // Migrations
+                if (filename.startsWith('database/migrations/')) {
+                  result.hasMigrations = true;
+                }
+
+                // Models
+                if (filename.startsWith('app/Models/')) {
+                  result.hasModelChanges = true;
+                }
+
+                // Factories
+                if (filename.startsWith('database/factories/')) {
+                  result.hasFactoryUpdates = true;
+                }
+
+                // Environment
+                if (filename === '.env.example') {
+                  result.hasEnvExampleUpdates = true;
+                }
+
+                // Tests
+                if (filename.startsWith('tests/') && filename.endsWith('Test.php')) {
+                  testFiles.push(filename);
+                  if (filename.includes('Livewire')) result.hasLivewireTests = true;
+                  if (filename.includes('Filament')) result.hasFilamentTests = true;
+                }
+              });
+
+              // --- 3. Logique post-analyse (Points positifs) ---
+              if (testFiles.length > 0 && !result.positiveAspects.includes('Tests inclus - Excellent!')) {
+                result.positiveAspects.push('Tests inclus - Excellent!');
+              }
+              if (result.hasLivewireChanges && result.hasLivewireTests) {
+                result.positiveAspects.push('Tests Livewire inclus - Parfait!');
+              }
+              if (result.hasFilamentChanges && result.hasFilamentTests) {
+                result.positiveAspects.push('Tests Filament inclus - Excellent!');
+              }
+
+              return result;
+            }
+
+            // ==========================================================
+            // 🚀 SCRIPT PRINCIPAL
+            // ==========================================================
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            const warnings = [];
+            const suggestions = [];
+
+            // 🔍 Analyses spécifiques
+            const analysis = analyzePR(files);
+
+            // 📝 Construction du message de review
+            let reviewBody = `## 🤖 Auto Review (Heuristics)
+
+            `;
+
+            // --- NOUVELLE SECTION DEBUG ---
+            if (analysis.leftoverDebug.length > 0) {
+              warnings.push('**Debug**: Du code de debug (`dd`, `dump`, `ray`) a été trouvé !');
+            }
+
+            // --- Logique existante ---
+            if (analysis.hasLivewireChanges && !analysis.hasLivewireTests) {
+              warnings.push('**Livewire**: Composants modifiés sans tests correspondants.');
+            }
+
+            if (analysis.hasFilamentChanges && !analysis.hasFilamentTests) {
+              warnings.push('**Filament**: Resources/Pages modifiées sans tests.');
+            }
+
+            if (analysis.hasModelChanges && !analysis.hasFactoryUpdates) {
+              suggestions.push('Pensez à mettre à jour les factories des modèles modifiés');
+            }
+
+            if (analysis.largePR) {
+              warnings.push(`PR volumineuse (${analysis.fileCount} fichiers) - Envisagez de la découper`);
+            }
+
+            if (analysis.hasEnvExampleUpdates) {
+              suggestions.push('N\'oubliez pas de mettre à jour la documentation et les autres fichiers `.env`');
+            }
+
+            // 🎯 Ajout des sections au review
+            if (warnings.length > 0) {
+              reviewBody += `### ⚠️ Points de Vigilance\n`;
+              warnings.forEach(warning => reviewBody += `- ${warning}\n`);
+
+              // Ajout des détails pour le debug
+              if (analysis.leftoverDebug.length > 0) {
+                 analysis.leftoverDebug.forEach(line => reviewBody += `  - ${line}\n`);
+              }
+              reviewBody += `\n`;
+            }
+
+            if (suggestions.length > 0) {
+              reviewBody += `### 💡 Suggestions\n`;
+              suggestions.forEach(suggestion => reviewBody += `- ${suggestion}\n`);
+              reviewBody += `\n`;
+            }
+
+            if (analysis.positiveAspects.length > 0) {
+              reviewBody += `### ✅ Points Positifs\n`;
+              analysis.positiveAspects.forEach(point => reviewBody += `- ${point}\n`);
+              reviewBody += `\n`;
+            }
+
+            // 🚨 Déterminer le statut de la review
+            let event = 'COMMENT';
+            // Si du code de debug est trouvé, on demande des changements
+            if (analysis.leftoverDebug.length > 0 || warnings.length > 2 || analysis.criticalIssues.length > 0) {
+              event = 'REQUEST_CHANGES';
+            } else if (warnings.length === 0 && suggestions.length === 0) {
+              if (analysis.positiveAspects.length === 0) {
+                 console.log('Aucun commentaire à faire.');
+                 return;
+              }
+              reviewBody += `\n🎉 Aucun problème de convention détecté!`;
+            }
+
+            // 📤 Poster la review
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: reviewBody,
+              event: event
+            });

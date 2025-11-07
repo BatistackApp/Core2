@@ -1,0 +1,74 @@
+name: 🗃️ Synchronisation Schéma BDD
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # Limiter aux chemins pour ne pas l'exécuter inutilement
+    paths:
+      - 'database/migrations/**'
+      - 'app/**' # Nécessaire si les modèles affectent le schéma
+
+permissions:
+  # Requis pour pouvoir pusher le commit sur la branche de la PR
+  contents: write
+
+jobs:
+  sync-schema:
+    name: 🗃️ Dump Schéma
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v5
+        # Important : on checkout la branche de la PR, pas la branche de base
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3' # Assurez-vous que c'est la bonne version
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          tools: composer:v2
+
+      - name: 📦 Cache Composer dependencies
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: 🎯 Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: 📋 Setup .env for schema dump
+        run: |
+          cp .env.example .env
+          # Forcer SQLite en mémoire/fichier pour la migration
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=:memory:" >> .env
+          touch database/database.sqlite
+
+      - name: 🔑 Generate application key
+        run: php artisan key:generate
+
+      - name: 🗃️ Run migrations to build schema
+        run: php artisan migrate --force
+
+      - name: 💾 Dump Schema
+        run: |
+          # --prune efface les anciens dumps pour garder le repo propre
+          php artisan schema:dump --prune
+
+      - name: 🤖 Commit Schema changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: Mettre à jour le schéma de la base de données"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "github-actions@github.com"
+          commit_author: "GitHub Actions Bot <github-actions@github.com>"
+          # Limiter au fichier/dossier de schéma
+          file_pattern: "database/schema/*.sql"

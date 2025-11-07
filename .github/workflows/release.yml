@@ -1,0 +1,75 @@
+name: 📦 Release et Changelog
+
+on:
+  push:
+    branches: [ production ] # Déclencheur principal
+  workflow_dispatch: # Pour exécution manuelle
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-and-notify:
+    name: 📦 Release et Notification
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v5
+        with:
+          # Nécessaire pour que semantic-release puisse analyser l'historique
+          fetch-depth: 0
+          # Utilise un PAT pour autoriser le push du tag et du CHANGELOG.MD
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install Node.js dependencies
+        run: npm ci # Assure que semantic-release et les plugins sont installés
+
+      - name: 🚀 Exécuter Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          # Exécute semantic-release
+          semantic_version: "25" # ou la version que vous utilisez
+
+      - name: 📢 Envoyer la notification Mattermost
+        # On utilise les 'outputs' de l'action
+        if: steps.semantic.outputs.new_release_published == 'true'
+        env:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          NEW_VERSION: ${{ steps.semantic.outputs.new_release_version }}
+          CHANGELOG_BODY: ${{ steps.semantic.outputs.new_release_notes }} # <-- Plus simple !
+          REPO_URL: "https://github.com/${{ github.repository }}"
+        run: |
+          # Formatage du JSON pour Mattermost
+          JSON_PAYLOAD=$(printf '{
+            "username": "Release Bot",
+            "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+            "text": "## 🎉 Nouvelle Release : %s\n\nUne nouvelle version vient d\u0027être publiée pour `%s`\n\n### 📋 Changelog\n%s\n\n[Voir la release sur GitHub](%s/releases/tag/%s)"
+          }' \
+          "$NEW_VERSION" \
+          "${{ github.repository }}" \
+          "$CHANGELOG_BODY" \
+          "$REPO_URL" \
+          "$NEW_VERSION")
+
+          curl -X POST -H 'Content-Type: application/json' \
+          --fail \
+          -d "${JSON_PAYLOAD}" \
+          "${MATTERMOST_WEBHOOK_URL}"
+
+      - name: 💬 Afficher le statut
+        if: steps.semantic.outputs.new_release_published != 'true'
+        run: |
+          echo "Aucune nouvelle release n'a été créée (pas de commits 'feat', 'fix', etc.)."

@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # 1. Configuration pour Composer (PHP/Laravel)
+  - package-ecosystem: "composer"
+    directory: "/" # Racine du projet (où se trouve composer.json)
+    schedule:
+      interval: "weekly" # Vérifie les mises à jour une fois par semaine
+    commit-message:
+      prefix: "chore(deps)" # Préfixe pour les commits
+      include: "scope"
+    # (Optionnel) Mettre un label sur les PRs créées
+    labels:
+      - "dependencies"
+      - "php"
+
+  # 2. Configuration pour NPM (Node.js/Vite/Tailwind)
+  - package-ecosystem: "npm"
+    directory: "/" # Racine du projet (où se trouve package.json)
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "javascript"

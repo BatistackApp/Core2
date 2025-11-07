@@ -1,0 +1,30 @@
+name: 🚀 Déploiement
+on:
+  release:
+    types: [published]
+
+jobs:
+  trigger-deployment:
+    name: 🔔 Notify Deployment Server
+    runs-on: ubuntu-latest
+
+    # ⚠️ SÉCURITÉ : Ne se déclenche pas si c'est une "pre-release" (ex: v1.0.0-beta)
+    # Si vous voulez déployer les pre-releases, supprimez cette ligne.
+    if: github.event.release.prerelease == false
+
+    steps:
+      - name: Récupération des informations de la version
+        id: release-info
+        run: |
+          echo "Release Tag: ${{ github.event.release.tag_name }}"
+          echo "Release Name: ${{ github.event.release.name }}"
+          echo "Triggering deployment..."
+
+      - name: Appel du webhook de déploiement
+        run: |
+          curl -X POST \
+            --fail \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            -d '{"event_type": "new_release", "tag_name": "${{ github.event.release.tag_name }}", "release_name": "${{ github.event.release.name }}", "repository": "${{ github.repository }}"}' \
+            ${{ secrets.DEPLOY_WEBHOOK_URL }}

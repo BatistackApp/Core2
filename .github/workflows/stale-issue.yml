@@ -1,0 +1,57 @@
+name: 🧹 Nettoyage (Issues & PR Périmées)
+
+on:
+  schedule:
+    # S'exécute tous les jours à 5h du matin
+    - cron: '0 5 * * *'
+  workflow_dispatch: # Permet un lancement manuel
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    name: 🧹 Marquage des Issues/PR périmées
+
+    steps:
+      - name: Exécuter l'action "Stale"
+        uses: actions/stale@v9
+        with:
+          # Token requis pour modifier les issues/PRs
+          repo-token: ${{ secrets.GH_TOKEN }}
+
+          # --- Configuration générale ---
+
+          # Nombre de jours d'inactivité avant de marquer comme "périmé"
+          days-before-stale: 90 # 3 mois d'inactivité
+
+          # Nombre de jours avant de fermer (après le marquage)
+          days-before-close: 14 # 2 semaines de grâce
+
+          # Labels à ajouter
+          stale-issue-label: "périmé"
+          stale-pr-label: "périmé"
+
+          # --- Configuration des Issues ---
+          stale-issue-message: |
+            Bonjour,
+            Cette issue est inactive depuis plus de 90 jours.
+            Elle va être fermée automatiquement dans 14 jours si aucune activité n'est détectée.
+
+            Si vous pensez que cette issue est toujours pertinente, veuillez laisser un commentaire. Merci.
+
+          # --- Configuration des Pull Requests ---
+          stale-pr-message: |
+            Bonjour,
+            Cette Pull Request est inactive depuis plus de 90 jours.
+            Elle va être fermée automatiquement dans 14 jours si aucune activité n'est détectée.
+
+            Si cette PR est toujours en cours de développement, veuillez laisser un commentaire ou la marquer comme "Draft".
+
+          # --- Exceptions (très important) ---
+
+          # Ne jamais marquer les issues/PR avec ces labels
+          # Ne pas marquer les PR en "Draft"
+          exempt-draft-pr: true
