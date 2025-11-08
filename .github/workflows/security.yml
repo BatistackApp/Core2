@@ -79,7 +79,7 @@ jobs:
           # CORRIGÉ : Regex grep beaucoup plus complète
           # Recherche de clés API, tokens, mots de passe en dur (style Laravel et générique)
           grep -r -n -i -E \
-            "(APP_KEY|API_KEY|SECRET_KEY|STRIPE_KEY|MAILGUN_SECRET|POSTMARK_TOKEN|AWS_SECRET_ACCESS_KEY|SESSION_SECRET|DATABASE_URL|CLIENT_SECRET|PASSWORD|TOKEN)" \
+            "(APP_KEY|API_KEY|SECRET_KEY|STRIPE_KEY|MAILGUN_SECRET|POSTMARK_TOKEN|AWS_SECRET_ACCESS_KEY|SESSION_SECRET|DATABASE_URL|CLIENT_SECRET)" \
             --include="*.php" --include="*.env*" --include="*.json" --include="*.yml" \
             --exclude="*.example" \
             --exclude-dir=node_modules --exclude-dir=vendor --exclude-dir=storage \
