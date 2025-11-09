@@ -48,7 +48,15 @@ class InstallApp extends Command
     {
         $license_key = $this->argument('license_key');
 
-        $this->verifKey($license_key, $batistack);
+        $response = $batistack->get('/license/info', ['license_key' => $license_key]);
+
+        if (! isset($response['id'])) {
+            $this->error('License key invalide');
+
+            return 0;
+        }
+        $this->info('License key valide');
+
         $this->installService($license_key, $batistack);
         $this->installModules($license_key, $batistack);
         $this->installOptions($license_key, $batistack);
@@ -60,21 +68,6 @@ class InstallApp extends Command
         $this->installModeReglement();
 
         return 0;
-    }
-
-    /**
-     * Vérification de la clé d'activation.
-     */
-    private function verifKey(string $license_key, Batistack $batistack): void
-    {
-        $response = $batistack->get('/license/info', ['license_key' => $license_key]);
-
-        if (! isset($response['id'])) {
-            $this->error('License key invalide');
-            return;
-        }
-
-        $this->info('License key valide');
     }
 
     /**
@@ -157,13 +150,17 @@ class InstallApp extends Command
         $this->info('Installation des options');
 
         foreach ($response['options'] as $option) {
+            if (empty($option['product']['name']) || empty($option['product']['slug'])) {
+                continue;
+            }
+
             $this->info("Installation de l'option : {$option['product']['name']}");
 
             Option::query()->updateOrCreate(['slug' => $option['product']['slug']], [
                 'name' => $option['product']['name'],
                 'slug' => $option['product']['slug'],
-                'settings' => json_encode($option['settings']),
-                'img_url' => "//saas.".config('batistack.domain').$option['product']['media'],
+                'settings' => json_encode($option['settings'] ?? []),
+                'img_url' => isset($option['product']['media']) ? "//saas.".config('batistack.domain').$option['product']['media'] : null,
             ]);
 
             // Déclenche le job de synchronisation des options
@@ -183,8 +180,6 @@ class InstallApp extends Command
         $cities = \App\Models\Core\City::query()->get();
 
         if ($cities->count() > 0) {
-            $this->info('Villes déjà installées');
-
             return;
         }
 
@@ -236,7 +231,7 @@ class InstallApp extends Command
 
             foreach ($countries as $country) {
                 Country::query()->create([
-                    'name' => $country,
+                    'name' => $country['name'],
                 ]);
                 $bar->advance();
             }
@@ -277,25 +272,9 @@ class InstallApp extends Command
         $hasBankAggregation = false;
         $bridge_client_id = null;
 
-        if (! isset($response['customer'])) {
-            $this->error('Installation des informations de la société impossible');
-        }
-
         $this->info('Installation des informations de la société');
 
-        Company::query()->updateOrCreate(['id' => 1], [
-            'name' => $response['customer']['entreprise'],
-            'address' => $response['customer']['adresse'],
-            'code_postal' => $response['customer']['code_postal'],
-            'ville' => $response['customer']['ville'],
-            'pays' => $response['customer']['pays'],
-            'phone' => $response['customer']['tel'],
-            'email' => $response['customer']['user']['email'],
-            'bridge_client_id' => $bridge_client_id,
-        ]);
-
         // Vérifier si l'option 'aggregation-bancaire' est présente
-
         if (isset($response['options']) && is_array($response['options'])) {
             foreach ($response['options'] as $option) {
                 if (isset($option['product']['slug']) && $option['product']['slug'] === 'aggregation-bancaire') {
@@ -308,19 +287,31 @@ class InstallApp extends Command
 
         if ($hasBankAggregation) {
             // Link Vers Bridge Api
-            if (! Company::query()->first()->bridge_client_id) {
+            $company = Company::query()->first();
+            if (! $company || ! $company->bridge_client_id) {
                 $bridge_client_id = app(CreateUser::class)->get();
                 app(AuthenticateUser::class)->get();
             } else {
-                $bridge_client_id = Company::query()->first()->bridge_client_id;
+                $bridge_client_id = $company->bridge_client_id;
                 app(AuthenticateUser::class)->get();
             }
         }
+
+        Company::query()->updateOrCreate(['id' => 1], [
+            'name' => $response['customer']['entreprise'],
+            'address' => $response['customer']['adresse'],
+            'code_postal' => $response['customer']['code_postal'],
+            'ville' => $response['customer']['ville'],
+            'pays' => $response['customer']['pays'],
+            'phone' => $response['customer']['tel'],
+            'email' => $response['customer']['user']['email'],
+            'bridge_client_id' => $bridge_client_id,
+        ]);
     }
 
     private function importBank(): void
     {
-        if (Bank::query()->count() !== 0) {
+        if (Bank::query()->count() === 0) {
             $bridge = new Bridge();
             $this->info('Installation des banques française');
 
@@ -330,7 +321,7 @@ class InstallApp extends Command
                 $progress->start();
 
                 foreach ($call as $bank) {
-                    Bank::query()->create([
+                    Bank::query()->updateOrCreate(["bridge_id" => $bank['id']],[
                         'bridge_id' => $bank['id'],
                         'name' => $bank['name'],
                         'logo_bank' => $bank['images']['logo'],
