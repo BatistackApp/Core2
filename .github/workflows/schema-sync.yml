@@ -55,6 +55,9 @@ jobs:
       - name: 🔑 Generate application key
         run: php artisan key:generate
 
+      - name: 🗑️ Nettoyer les schémas existants
+        run: rm -f database/schema/*.sql
+
       - name: 🗃️ Run migrations to build schema
         run: php artisan migrate --force
 
