@@ -53,7 +53,7 @@ class SyncOptionJob implements ShouldQueue
      */
     private function syncSauvegardeRetentions(): void
     {
-        $api = new Batistack();
+        $api = app(Batistack::class);
 
         try {
             if (Service::query()->first()->status === ServiceStatus::OK->value) {
@@ -96,6 +96,6 @@ class SyncOptionJob implements ShouldQueue
                     'status_payment' => $bank['health_status']['single_payment']['status'],
                 ]);
             }
-        }        
+        }
     }
 }

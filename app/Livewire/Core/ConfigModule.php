@@ -22,6 +22,12 @@ class ConfigModule extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
 
+    public function mount()
+    {
+        if (!auth()->check()) {
+            abort(401);
+        }
+    }
     public function table(Table $table): Table
     {
         return $table

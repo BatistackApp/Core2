@@ -10,6 +10,12 @@ use Livewire\Component;
 #[Title('Mon Compte')]
 class Profil extends Component
 {
+    public function mount()
+    {
+        if (!auth()->check()) {
+            abort(401);
+        }
+    }
     public function render()
     {
         return view('livewire.core.profil');

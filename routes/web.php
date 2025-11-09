@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/config', Config::class)->name('config.index');
 
     Route::get('profil', Profil::class)->name('profil');
+    Route::get('license', \App\Livewire\Core\License::class)->name('license');
 
     Route::get('/module/redirect', function (Request $request) {
         $slug = $request->get('slug');

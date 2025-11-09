@@ -44,7 +44,7 @@
             </li>
             @if(auth()->user()->isAdmin)
             <li>
-                <a class="kt-dropdown-menu-link" href="{{ route('profil') }}" wire:navigate>
+                <a class="kt-dropdown-menu-link" href="{{ route('license') }}" wire:navigate>
                     <i class="ki-filled ki-key">
                     </i>
                     Ma Licence

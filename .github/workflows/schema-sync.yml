@@ -49,11 +49,14 @@ jobs:
           cp .env.example .env
           # Forcer SQLite en mémoire/fichier pour la migration
           echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=:memory:" >> .env
+          echo "DB_DATABASE=${{ github.workspace }}/database/database.sqlite" >> .env
           touch database/database.sqlite
 
       - name: 🔑 Generate application key
         run: php artisan key:generate
+
+      - name: 🗑️ Nettoyer les schémas existants
+        run: rm -f database/schema/*.sql
 
       - name: 🗃️ Run migrations to build schema
         run: php artisan migrate --force

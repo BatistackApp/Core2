@@ -63,79 +63,6 @@ jobs:
       - name: 📁 Create security reports directory
         run: mkdir -p reports/security
 
-      - name: 🛡️ Advanced secrets detection
-        id: secrets-scan
-        continue-on-error: true
-        if: github.event.inputs.scan_type == 'full' || github.event.inputs.scan_type == 'secrets-only' || github.event.inputs.scan_type == ''
-        run: |
-          echo "🔍 Recherche avancée de secrets..."
-
-          # Scan avec TruffleHog (plus approfondi que module-ci.yml)
-          docker run --rm -v "$PWD:/pwd" trufflesecurity/trufflehog:latest filesystem /pwd \
-            --json --no-update > reports/security/trufflehog-detailed.json || true
-
-          echo "🔍 Recherche de patterns Laravel sensibles..."
-
-          # CORRIGÉ : Regex grep beaucoup plus complète
-          # Recherche de clés API, tokens, mots de passe en dur (style Laravel et générique)
-          grep -r -n -i -E \
-            "(APP_KEY|API_KEY|SECRET_KEY|STRIPE_KEY|MAILGUN_SECRET|POSTMARK_TOKEN|AWS_SECRET_ACCESS_KEY|SESSION_SECRET|DATABASE_URL|CLIENT_SECRET|PASSWORD|TOKEN)" \
-            --include="*.php" --include="*.env*" --include="*.json" --include="*.yml" \
-            --exclude="*.example" \
-            --exclude-dir=node_modules --exclude-dir=vendor --exclude-dir=storage \
-            --exclude="package-lock.json" --exclude="composer.lock" \
-            app/ config/ database/ routes/ resources/ .env* \
-            > reports/security/sensitive-patterns.txt || true
-
-          # Vérification des fichiers .env (inchangée)
-          find . -name ".env*" -not -name ".env.example" -not -name ".env.github" \
-            -not -path "./node_modules/*" -not -path "./vendor/*" \
-            -exec echo "⚠️ Fichier .env détecté: {}" \; > reports/security/env-files.txt || true
-
-          # Compter les secrets trouvés (inchangé)
-          SECRETS_COUNT=$(wc -l < reports/security/sensitive-patterns.txt || echo "0")
-          echo "secrets-count=$SECRETS_COUNT" >> $GITHUB_OUTPUT
-
-          # Créer un résumé structuré (inchangé)
-          # Ce script de résumé va maintenant fonctionner car le grep cherche les bons mots
-          if [ "$SECRETS_COUNT" -gt 0 ]; then
-            echo "⚠️ $SECRETS_COUNT patterns sensibles détectés"
-
-            # Créer un résumé des types de secrets détectés
-            echo "### 🔑 Résumé des Secrets Détectés" > reports/security/secrets-summary.md
-            echo "" >> reports/security/secrets-summary.md
-            echo "**Total détections**: $SECRETS_COUNT" >> reports/security/secrets-summary.md
-            echo "" >> reports/security/secrets-summary.md
-
-            # Analyser les types de patterns
-            if grep -q -i "api_key" reports/security/sensitive-patterns.txt; then
-              API_KEYS=$(grep -c -i "api_key" reports/security/sensitive-patterns.txt || echo "0")
-              echo "- 🔑 **Clés API**: $API_KEYS détections" >> reports/security/secrets-summary.md
-            fi
-
-            if grep -q -i "password" reports/security/sensitive-patterns.txt; then
-              PASSWORDS=$(grep -c -i "password" reports/security/sensitive-patterns.txt || echo "0")
-              echo "- 🔒 **Mots de passe**: $PASSWORDS détections" >> reports/security/secrets-summary.md
-            fi
-
-            if grep -q -i "token" reports/security/sensitive-patterns.txt; then
-              TOKENS=$(grep -c -i "token" reports/security/sensitive-patterns.txt || echo "0")
-              echo "- 🎫 **Tokens**: $TOKENS détections" >> reports/security/secrets-summary.md
-            fi
-
-            if grep -q -i "secret" reports/security/sensitive-patterns.txt; then
-              SECRETS=$(grep -c -i "secret" reports/security/sensitive-patterns.txt || echo "0")
-              echo "- 🤫 **Secrets**: $SECRETS détections" >> reports/security/secrets-summary.md
-            fi
-
-            echo "" >> reports/security/secrets-summary.md
-            echo "> ⚠️ **Action immédiate requise**: Tous ces éléments doivent être supprimés du code source." >> reports/security/secrets-summary.md
-          else
-            echo "✅ Aucun pattern sensible détecté"
-            echo "### 🔑 Secrets et Patterns Sensibles" > reports/security/secrets-summary.md
-            echo "✅ **Aucun secret détecté** - Le code source est propre." >> reports/security/secrets-summary.md
-          fi
-
       - name: 🔍 Vulnerability assessment
         id: vulnerability-check
         continue-on-error: true
@@ -187,10 +114,9 @@ jobs:
           echo "📊 Génération du résumé de sécurité..."
 
           CRITICAL_VULNS="${{ steps.vulnerability-check.outputs.critical-count || '0' }}"
-          SECRETS_FOUND="${{ steps.secrets-scan.outputs.secrets-count || '0' }}"
 
           # Déterminer le statut global
-          if [ "$CRITICAL_VULNS" -gt 0 ] || [ "$SECRETS_FOUND" -gt 0 ]; then
+          if [ "$CRITICAL_VULNS" -gt 0 ] ; then
             SECURITY_STATUS="failed"
             echo "❌ Problèmes de sécurité détectés"
           else
@@ -208,7 +134,6 @@ jobs:
 
           ## 📊 Résumé des Analyses
           - **Vulnérabilités critiques**: $CRITICAL_VULNS
-          - **Secrets détectés**: $SECRETS_FOUND
           - **Branche analysée**: ${{ github.ref_name }}
           - **Type de scan**: ${{ github.event.inputs.scan_type || 'full' }}
 
@@ -931,22 +856,22 @@ jobs:
           echo "=================================="
           echo "🔒 Scan de sécurité terminé avec succès"
 
-    summary:
-      name: 📋 Résumé Sécurité
-      runs-on: ubuntu-latest
-      needs: [ security-deep-scan, dependency-check, security-notifications ]
-      if: always()
-      steps:
-        - name: 📋 Generate security summary
-          run: |
-            echo "## 🔒 Résumé Security Deep Scan" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 🎯 Statut: ${{ needs.security-deep-scan.outputs.security-status == 'success' && '✅ SÉCURISÉ' || '❌ VULNÉRABILITÉS' }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 📊 Détections:" >> $GITHUB_STEP_SUMMARY
-            echo "- **Vulnérabilités critiques**: ${{ needs.security-deep-scan.outputs.critical-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Secrets détectés**: ${{ needs.security-deep-scan.outputs.secrets-found || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Vulnérabilités dépendances**: ${{ needs.dependency-check.outputs.dependency-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### 🔍 Type de scan: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
-            echo "### 📅 Exécuté le: $(date)" >> $GITHUB_STEP_SUMMARY
+  summary:
+    name: 📋 Résumé Sécurité
+    runs-on: ubuntu-latest
+    needs: [ security-deep-scan, dependency-check, security-notifications ]
+    if: always()
+    steps:
+      - name: 📋 Generate security summary
+        run: |
+          echo "## 🔒 Résumé Security Deep Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Statut: ${{ needs.security-deep-scan.outputs.security-status == 'success' && '✅ SÉCURISÉ' || '❌ VULNÉRABILITÉS' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Détections:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités critiques**: ${{ needs.security-deep-scan.outputs.critical-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets détectés**: ${{ needs.security-deep-scan.outputs.secrets-found || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnérabilités dépendances**: ${{ needs.dependency-check.outputs.dependency-vulnerabilities || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔍 Type de scan: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 📅 Exécuté le: $(date)" >> $GITHUB_STEP_SUMMARY

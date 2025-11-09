@@ -5,13 +5,6 @@ PR_NUMBER="$1"                  # Numéro de la PR (en argument)
 OLLAMA_MODEL="llama3"           # Modèle Ollama à utiliser
 OLLAMA_URL="http://localhost:11434/api/generate"
 
-# Vérification des dépendances
-for cmd in git curl jq gh; do
-    if ! command -v $cmd &> /dev/null; then
-        echo "❌ Commande manquante : $cmd"
-        exit 1
-    fi
-done
 
 if [ -z "$PR_NUMBER" ]; then
     echo "❌ Utilisation : $0 <numero_pr>"
@@ -32,5 +25,5 @@ PROMPT="Voici une liste de commits d'une Pull Request : [$COMMITS], Génère une
 concise et orientée utilisateur de cette PR.
 Écris en français. Format Markdown. Sans Résonnement.
 Seul les commit (feat, fix, release, breaking) doivent être pris en compte.
-Essaye de différencier les types de commit et met les en forme (ex: feat => Nouvelle fonctionnalité, etc...)"
+Essaye de différencier les types de commit et met les en forme (ex: feat => Nouvelle fonctionnalité, etc...) Ainsi qu'un titre pour la PR"
 echo $PROMPT

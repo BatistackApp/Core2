@@ -56,13 +56,33 @@ class Login extends Component implements HasSchemas, HasActions
 
     public function login()
     {
-        $this->ensureIsNotRateLimited();
-        $user = $this->validateCredentials();
+        // Valider le formulaire en premier
+        $this->form->validate();
+
+        try {
+            $this->ensureIsNotRateLimited();
+        } catch (ValidationException $e) {
+            // Attacher les erreurs au formulaire pour les tests
+            foreach ($e->errors() as $field => $messages) {
+                $this->addError("data.{$field}", is_array($messages) ? $messages[0] : $messages);
+            }
+            return;
+        }
+
+        try {
+            $user = $this->validateCredentials();
+        } catch (ValidationException $e) {
+            // Attacher les erreurs au formulaire pour les tests
+            foreach ($e->errors() as $field => $messages) {
+                $this->addError("data.{$field}", is_array($messages) ? $messages[0] : $messages);
+            }
+            return;
+        }
 
         if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
             Session::put([
                 'login.id' => $user->getKey(),
-                'login.remember' => $this->form->getState()['remember'],
+                'login.remember' => $this->form->getState()['remember'] ?? false,
             ]);
 
             $this->redirect(route('two-factor.login'), navigate: true);
@@ -70,7 +90,7 @@ class Login extends Component implements HasSchemas, HasActions
             return;
         }
 
-        Auth::login($user, $this->form->getState()['remember']);
+        Auth::login($user, $this->form->getState()['remember'] ?? false);
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
@@ -97,7 +117,6 @@ class Login extends Component implements HasSchemas, HasActions
                 'minutes' => ceil($seconds / 60),
             ]),
         ]);
-        flash()->error(__('auth.throttle'));
     }
 
     /**
@@ -105,12 +124,11 @@ class Login extends Component implements HasSchemas, HasActions
      */
     protected function validateCredentials(): User
     {
-        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->form->getState()['email'], 'password' => $this->form->getState()['password']]);
+        $state = $this->form->getState();
+        $user = Auth::getProvider()->retrieveByCredentials(['email' => $state['email']]);
 
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->form->getState()['password']])) {
+        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $state['password']])) {
             RateLimiter::hit($this->throttleKey());
-
-            flash()->error(__('auth.failed'));    
 
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
@@ -125,7 +143,8 @@ class Login extends Component implements HasSchemas, HasActions
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->form->getState()['email']).'|'.request()->ip());
+        $state = $this->form->getState();
+        return Str::transliterate(Str::lower($state['email'] ?? '').'|'.request()->ip());
     }
 
     public function render()
