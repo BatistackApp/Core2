@@ -220,6 +220,97 @@ CREATE INDEX "notifications_notifiable_type_notifiable_id_index" on "notificatio
   "notifiable_type",
   "notifiable_id"
 );
+CREATE TABLE IF NOT EXISTS "tiers"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "nature" varchar not null,
+  "type" varchar not null,
+  "code_tiers" varchar not null,
+  "siren" varchar,
+  "tva" tinyint(1) not null,
+  "num_tva" varchar
+);
+CREATE TABLE IF NOT EXISTS "tiers_addresses"(
+  "id" integer primary key autoincrement not null,
+  "address" varchar,
+  "code_postal" varchar,
+  "ville" varchar,
+  "pays" varchar,
+  "tiers_id" integer not null,
+  foreign key("tiers_id") references "tiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "tiers_contacts"(
+  "id" integer primary key autoincrement not null,
+  "nom" varchar,
+  "prenom" varchar,
+  "civilite" varchar,
+  "poste" varchar,
+  "tel" varchar,
+  "portable" varchar,
+  "email" varchar,
+  "tiers_id" integer not null,
+  foreign key("tiers_id") references "tiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "tiers_supplies"(
+  "id" integer primary key autoincrement not null,
+  "tva" tinyint(1) not null,
+  "num_tva" varchar,
+  "rem_relative" varchar,
+  "rem_fixe" varchar,
+  "code_comptable_general" integer not null,
+  "code_comptable_fournisseur" integer not null,
+  "tiers_id" integer not null,
+  "condition_reglement_id" integer not null,
+  "mode_reglement_id" integer not null,
+  foreign key("code_comptable_general") references "plan_comptables"("id"),
+  foreign key("code_comptable_fournisseur") references "plan_comptables"("id"),
+  foreign key("tiers_id") references "tiers"("id") on delete cascade on update cascade,
+  foreign key("condition_reglement_id") references "condition_reglements"("id"),
+  foreign key("mode_reglement_id") references "mode_reglements"("id")
+);
+CREATE TABLE IF NOT EXISTS "tiers_customers"(
+  "id" integer primary key autoincrement not null,
+  "tva" tinyint(1) not null,
+  "num_tva" varchar,
+  "rem_relative" varchar not null,
+  "rem_fixe" varchar not null,
+  "code_comptable_general" integer not null,
+  "code_comptable_client" integer not null,
+  "tiers_id" integer not null,
+  "condition_reglement_id" integer not null,
+  "mode_reglement_id" integer not null,
+  foreign key("code_comptable_general") references "plan_comptables"("id") on delete cascade on update cascade,
+  foreign key("code_comptable_client") references "plan_comptables"("id") on delete cascade on update cascade,
+  foreign key("tiers_id") references "tiers"("id") on delete cascade on update cascade,
+  foreign key("condition_reglement_id") references "condition_reglements"("id"),
+  foreign key("mode_reglement_id") references "mode_reglements"("id")
+);
+CREATE TABLE IF NOT EXISTS "tiers_logs"(
+  "id" integer primary key autoincrement not null,
+  "title" varchar not null,
+  "event_day" tinyint(1) not null default '0',
+  "start_at" datetime,
+  "end_at" datetime,
+  "status" varchar,
+  "description" text,
+  "lieu" varchar,
+  "user_id" integer not null,
+  "tiers_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("user_id") references "users"("id")
+);
+CREATE TABLE IF NOT EXISTS "tiers_banks"(
+  "id" integer primary key autoincrement not null,
+  "iban" varchar not null,
+  "bic" varchar not null,
+  "external_id" varchar,
+  "tiers_id" integer not null,
+  "bank_id" integer not null,
+  "default" tinyint(1) not null,
+  foreign key("tiers_id") references "tiers"("id") on delete cascade on update cascade,
+  foreign key("bank_id") references "banks"("id")
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -239,3 +330,10 @@ INSERT INTO migrations VALUES(15,'2025_11_01_195109_create_personal_access_token
 INSERT INTO migrations VALUES(16,'2025_11_01_195915_create_settings_table',1);
 INSERT INTO migrations VALUES(17,'2025_11_01_195916_add_settings_team_field',1);
 INSERT INTO migrations VALUES(18,'2025_11_01_200421_create_notifications_table',1);
+INSERT INTO migrations VALUES(19,'2025_11_09_192206_create_tiers_table',1);
+INSERT INTO migrations VALUES(20,'2025_11_09_194030_create_tiers_addresses_table',1);
+INSERT INTO migrations VALUES(21,'2025_11_09_195856_create_tiers_contacts_table',1);
+INSERT INTO migrations VALUES(22,'2025_11_09_200240_create_tiers_supplies_table',1);
+INSERT INTO migrations VALUES(23,'2025_11_09_200620_create_tiers_customers_table',1);
+INSERT INTO migrations VALUES(24,'2025_11_09_200904_create_tiers_logs_table',1);
+INSERT INTO migrations VALUES(25,'2025_11_09_201111_create_tiers_banks_table',1);
