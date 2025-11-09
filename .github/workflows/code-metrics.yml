@@ -88,6 +88,8 @@ jobs:
         run: |
           # Note: 'secrets.GH_ENV' ne sera pas disponible pour les forks externes
           echo '${{ secrets.GH_ENV }}' > .env
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=${{ github.workspace }}/database/database.sqlite" >> .env
           php artisan key:generate
 
       - name: 🧪 Run tests with coverage
