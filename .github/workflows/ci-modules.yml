@@ -2,7 +2,7 @@ name: 🏗️ CI Modulaire (Validation PR)
 
 on:
   pull_request:
-    branches: [ master, production ]
+    branches: [ modules/**, production ]
     types: [ opened, synchronize, reopened ]
   workflow_dispatch:
     inputs:
