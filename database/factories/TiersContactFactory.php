@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Tiers\Tiers;
+use App\Models\Tiers\TiersContact;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class TiersContactFactory extends Factory
+{
+    protected $model = TiersContact::class;
+
+    public function definition(): array
+    {
+        return [
+            'nom' => $this->faker->firstName(),
+            'prenom' => $this->faker->lastName(),
+            'civilite' => $this->faker->title(),
+            'poste' => $this->faker->jobTitle(),
+            'tel' => $this->faker->phoneNumber(),
+            'portable' => fake()->e164PhoneNumber,
+            'email' => $this->faker->unique()->safeEmail(),
+
+            'tiers_id' => Tiers::factory(),
+        ];
+    }
+}
