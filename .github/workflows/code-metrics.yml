@@ -133,15 +133,35 @@ jobs:
             VIOLATIONS_COUNT=$(jq '.totals.file_errors // 0' reports/metrics/phpstan.json 2>/dev/null || echo "0")
           fi
 
-          # Analyser la Couverture de Test (Clover XML)
+          # Analyser la Couverture de Test (Clover XML) - CORRIGÉ
           if [ -f "reports/metrics/coverage.xml" ]; then
-            COVERED_LINES=$(grep -o 'coveredlines="[0-9]*"' reports/metrics/coverage.xml | cut -d'"' -f2 | awk '{sum+=$1} END {print sum}')
-            TOTAL_LINES=$(grep -o 'lines="[0-9]*"' reports/metrics/coverage.xml | cut -d'"' -f2 | awk '{sum+=$1} END {print sum}')
-            if [ "$TOTAL_LINES" -ne "0" ]; then
-              COVERAGE_SCORE=$(awk "BEGIN {printf \"%.2f\", ($COVERED_LINES / $TOTAL_LINES) * 100}")
+            # Utiliser xmllint pour parser correctement le XML
+            # Chercher la balise <metrics> au niveau du projet (pas des fichiers individuels)
+            COVERED_STATEMENTS=$(xmllint --xpath "string(//project/metrics/@coveredstatements)" reports/metrics/coverage.xml 2>/dev/null || echo "0")
+            TOTAL_STATEMENTS=$(xmllint --xpath "string(//project/metrics/@statements)" reports/metrics/coverage.xml 2>/dev/null || echo "0")
+
+            # Alternative si xmllint n'est pas disponible : utiliser grep/sed de façon plus précise
+            if [ -z "$COVERED_STATEMENTS" ] || [ "$COVERED_STATEMENTS" = "0" ]; then
+              # Parser la ligne contenant les métriques du projet
+              PROJECT_METRICS=$(grep '<metrics ' reports/metrics/coverage.xml | head -1)
+              if [ -n "$PROJECT_METRICS" ]; then
+                COVERED_STATEMENTS=$(echo "$PROJECT_METRICS" | sed -n 's/.*coveredstatements="\([0-9]*\)".*/\1/p')
+                TOTAL_STATEMENTS=$(echo "$PROJECT_METRICS" | sed -n 's/.*statements="\([0-9]*\)".*/\1/p')
+              fi
+            fi
+
+            # Calculer le pourcentage
+            if [ -n "$TOTAL_STATEMENTS" ] && [ "$TOTAL_STATEMENTS" -ne "0" ] && [ "$TOTAL_STATEMENTS" != "" ]; then
+              COVERAGE_SCORE=$(awk "BEGIN {printf \"%.2f\", ($COVERED_STATEMENTS / $TOTAL_STATEMENTS) * 100}")
             else
               COVERAGE_SCORE="0.00"
             fi
+
+            echo "🔍 Debug Coverage:"
+            echo "  - Covered: $COVERED_STATEMENTS"
+            echo "  - Total: $TOTAL_STATEMENTS"
+          else
+            echo "⚠️ Fichier coverage.xml non trouvé"
           fi
 
           # Définir les seuils de qualité
