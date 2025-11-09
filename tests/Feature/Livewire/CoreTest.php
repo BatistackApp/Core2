@@ -474,3 +474,14 @@ describe('Core Components Integration', function () {
         expect(auth()->check())->toBeFalse();
     });
 });
+
+describe("License Panel Component", function () {
+    test('renders successfully for authenticated users', function () {
+        $user = User::factory()->create();
+
+        actingAs($user);
+
+        Livewire::test(\App\Livewire\Core\License::class)
+            ->assertStatus(200);
+    });
+});

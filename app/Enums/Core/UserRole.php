@@ -28,13 +28,13 @@ enum UserRole: string
     public function color(): string
     {
         return match ($this) {
-            self::ADMINISTRATEUR => 'danger',
+            self::ADMINISTRATEUR => 'destructive',
             self::CLIENT => 'success',
             self::FOURNISSEUR => 'warning',
             self::SALARIE => 'info',
             self::COMPTABILITE => 'primary',
             // self::COUNTERMASTER => 'secondary',
-            default => 'gray',
+            default => 'mono',
         };
     }
 }

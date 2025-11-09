@@ -231,7 +231,7 @@ class InstallApp extends Command
 
             foreach ($countries as $country) {
                 Country::query()->create([
-                    'name' => $country['name'],
+                    'name' => $country,
                 ]);
                 $bar->advance();
             }

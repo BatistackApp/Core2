@@ -23,9 +23,9 @@ enum BankStatus: string
     {
         return match ($this) {
             self::Healthy => 'success',
-            self::Degraded => 'amber-500',
-            self::Down => 'danger',
-            default => 'gray',
+            self::Degraded => 'warning',
+            self::Down => 'destructive',
+            default => 'mono',
         };
     }
 }

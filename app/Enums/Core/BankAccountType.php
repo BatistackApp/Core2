@@ -35,9 +35,9 @@ enum BankAccountType: string
             BankAccountType::CHECKING => 'success',
             BankAccountType::SAVINGS, BankAccountType::PEA => 'primary',
             BankAccountType::BROKERAGE, BankAccountType::LOAN, BankAccountType::LIFE_INSURANCE => 'warning',
-            BankAccountType::CARD => 'danger',
+            BankAccountType::CARD => 'destructive',
             BankAccountType::UNKNOWN => 'secondary',
-            default => 'gray',
+            default => 'mono',
         };
     }
 }

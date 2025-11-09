@@ -28,23 +28,19 @@ enum ServiceStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::EXPIRED => 'danger',
+            self::EXPIRED, self::UNPAID, self::ERROR => 'destructive',
             self::OK => 'success',
-            self::PENDING => 'warning',
-            self::UNPAID => 'danger',
-            self::ERROR => 'danger',
-            self::SUSPENDED => 'warning',
+            self::PENDING, self::SUSPENDED => 'warning',
         };
     }
 
     public function icon(): string
     {
         return match ($this) {
-            self::EXPIRED => 'heroicon-o-x-circle',
+            self::EXPIRED, self::ERROR => 'heroicon-o-x-circle',
             self::OK => 'heroicon-o-check-circle',
             self::PENDING => 'heroicon-o-arrow-path',
             self::UNPAID => 'heroicon-o-exclamation-circle',
-            self::ERROR => 'heroicon-o-x-circle',
             self::SUSPENDED => 'heroicon-o-pause-circle',
         };
     }
