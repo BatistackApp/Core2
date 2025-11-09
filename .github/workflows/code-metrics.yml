@@ -99,6 +99,10 @@ jobs:
         run: |
           ./vendor/bin/pest --coverage --coverage-clover=reports/metrics/coverage.xml --coverage-html=reports/metrics/coverage
 
+          # Extraire le pourcentage de couverture de la sortie
+          COVERAGE=$(grep -oP 'Total Coverage.*\K\d+\.\d+' reports/metrics/test-output.txt || echo "0.00")
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+
       - name: Upload Coverage Report (Codecov)
         uses: codecov/codecov-action@v5
         with:
@@ -119,7 +123,7 @@ jobs:
           QUALITY_STATUS="success"
           COMPLEXITY_SCORE=0
           MAINTAINABILITY_SCORE=0
-          COVERAGE_SCORE="0.00"
+          COVERAGE_SCORE="${{ steps.test-coverage.outputs.coverage }}"
           VIOLATIONS_COUNT=0
 
           # Analyser PHPMetrics (si le fichier JSON existe)
