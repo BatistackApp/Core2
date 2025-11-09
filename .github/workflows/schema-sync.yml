@@ -49,7 +49,7 @@ jobs:
           cp .env.example .env
           # Forcer SQLite en mémoire/fichier pour la migration
           echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=:memory:" >> .env
+          echo "DB_DATABASE=${{ github.workspace }}/database/database.sqlite" >> .env
           touch database/database.sqlite
 
       - name: 🔑 Generate application key
