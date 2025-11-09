@@ -12,6 +12,12 @@ use Livewire\Component;
 
 class Config extends Component
 {
+    public function mount()
+    {
+        if (!auth()->check()) {
+            abort(401);
+        }
+    }
     public function render()
     {
         return view('livewire.core.config');

@@ -32,6 +32,9 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
     public function mount()
     {
+        if (!auth()->check()) {
+            abort(401);
+        }
         $this->company = Company::first();
         $this->form->fill($this->company->attributesToArray());
     }
@@ -94,22 +97,7 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
                             Action::make('verifySiren')
                                 ->label('Vérifier le SIREN')
-                                ->action(function (Get $get) {
-                                    if (!empty($get('siret'))) {
-                                        $verify = app(Siren::class)->call($get('siret'), etab: true, type: 'verify');
-
-                                        if ($verify) {
-                                            sweetalert()
-                                                ->success("Le SIRET est valide");
-                                        } else {
-                                            sweetalert()
-                                                ->error("Le SIRET n'est pas valide");
-                                        }
-                                    } else {
-                                        sweetalert()
-                                            ->warning("Veuillez renseigner le SIRET");
-                                    }
-                                }),
+                                ->action(fn (Get $get) => $this->verifySiren($get('siret'))),
                             TextInput::make('ape')
                                 ->label('Code APE/NAF'),
 
@@ -133,27 +121,58 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
 
                             Action::make('verifyVat')
                                 ->label('Vérifier le numéro de TVA')
-                                ->action(function (Get $get) {
-                                    if (!empty($get('num_tva'))) {
-                                        $verify = app(VatValidator::class)->isValid($get('num_tva'));
-
-                                        if ($verify) {
-                                            sweetalert()
-                                                ->success("Le numéro de TVA est valide");
-                                        } else {
-                                            sweetalert()
-                                                ->error("Le numéro de TVA n'est pas valide");
-                                        }
-                                    } else {
-                                        sweetalert()
-                                            ->warning("Veuillez renseigner le numéro de TVA");
-                                    }
-                                }),
+                                ->action(fn (Get $get) => $this->verifVat($get('num_tva'))),
                         ])
                 ])
         ])
         ->statePath('data')
         ->model($this->company);
+    }
+
+    public function verifySiren(?string $siret = null): bool
+    {
+        $siretValue = $siret ?? $this->data['siret'] ?? null;
+
+        if (!empty($siretValue)) {
+            $verify = app(Siren::class)->call($siretValue, etab: true, type: 'verify');
+
+            if ($verify) {
+                sweetalert()
+                    ->success("Le SIRET est valide");
+                return true;
+            } else {
+                sweetalert()
+                    ->error("Le SIRET n'est pas valide");
+                return false;
+            }
+        } else {
+            sweetalert()
+                ->warning("Veuillez renseigner le SIRET");
+            return false;
+        }
+    }
+
+    public function verifVat(?string $numTva = null): bool
+    {
+        $numTvaValue = $numTva ?? $this->data['num_tva'] ?? null;
+
+        if (!empty($numTvaValue)) {
+            $verify = app(VatValidator::class)->isValid($numTvaValue);
+
+            if ($verify) {
+                sweetalert()
+                    ->success("Le numéro de TVA est valide");
+                return true;
+            } else {
+                sweetalert()
+                    ->error("Le numéro de TVA n'est pas valide");
+                return false;
+            }
+        } else {
+            sweetalert()
+                ->warning("Veuillez renseigner le numéro de TVA");
+            return false;
+        }
     }
 
     public function updateCompany()
