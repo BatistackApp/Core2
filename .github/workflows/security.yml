@@ -82,7 +82,7 @@ jobs:
             "(APP_KEY|API_KEY|SECRET_KEY|STRIPE_KEY|MAILGUN_SECRET|POSTMARK_TOKEN|AWS_SECRET_ACCESS_KEY|SESSION_SECRET|DATABASE_URL|CLIENT_SECRET)" \
             --include="*.php" --include="*.env*" --include="*.json" --include="*.yml" \
             --exclude="*.example" \
-            --exclude-dir=node_modules --exclude-dir=vendor --exclude-dir=storage \
+            --exclude-dir=node_modules --exclude-dir=vendor --exclude-dir=storage --exclude-dir=app --exclude-dir=config \
             --exclude="package-lock.json" --exclude="composer.lock" \
             app/ config/ database/ routes/ resources/ .env* \
             > reports/security/sensitive-patterns.txt || true
