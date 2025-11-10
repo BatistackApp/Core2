@@ -311,6 +311,93 @@ CREATE TABLE IF NOT EXISTS "tiers_banks"(
   foreign key("tiers_id") references "tiers"("id") on delete cascade on update cascade,
   foreign key("bank_id") references "banks"("id")
 );
+CREATE TABLE IF NOT EXISTS "chantiers"(
+  "id" integer primary key autoincrement not null,
+  "libelle" varchar not null,
+  "description" text,
+  "date_debut" date not null,
+  "date_fin_prevu" date not null,
+  "date_fin_reel" date,
+  "status" varchar not null default 'planifie',
+  "budget_estime" numeric not null,
+  "budget_reel" numeric not null,
+  "tiers_id" integer not null,
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("tiers_id") references "tiers"("id"),
+  foreign key("user_id") references "users"("id")
+);
+CREATE TABLE IF NOT EXISTS "chantiers_tasks"(
+  "id" integer primary key autoincrement not null,
+  "libelle" varchar not null,
+  "description" text,
+  "date_debut_prevu" date not null,
+  "date_fin_prevue" date not null,
+  "date_debut_reel" date,
+  "date_fin_reel" date,
+  "status" varchar not null,
+  "priority" varchar not null,
+  "assigned_id" integer,
+  "chantiers_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("chantiers_id") references "chantiers"("id")
+);
+CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
+  "id" integer primary key autoincrement not null,
+  "description" varchar not null,
+  "montant" numeric not null,
+  "date_depense" date not null,
+  "type_depense" varchar not null,
+  "invoice_ref" varchar,
+  "tiers_id" integer not null,
+  "chantiers_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("tiers_id") references "tiers"("id"),
+  foreign key("chantiers_id") references "chantiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
+  "id" integer primary key autoincrement not null,
+  "date_intervention" date not null default '2025-11-10 23:26:49',
+  "description" text not null,
+  "temps" numeric,
+  "facturable" tinyint(1) not null default '1',
+  "chantiers_id" integer not null,
+  "intervenant_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("chantiers_id") references "chantiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "chantiers_addresses"(
+  "id" integer primary key autoincrement not null,
+  "address" varchar not null,
+  "code_postal" varchar not null,
+  "ville" varchar not null,
+  "pays" varchar not null,
+  "latitude" varchar,
+  "longitude" varchar,
+  "chantiers_id" integer not null,
+  foreign key("chantiers_id") references "chantiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "chantiers_user"(
+  "chantiers_id" integer not null,
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("chantiers_id") references "chantiers"("id") on delete cascade,
+  foreign key("user_id") references "users"("id") on delete cascade,
+  primary key("chantiers_id", "user_id")
+);
+CREATE TABLE IF NOT EXISTS "chantiers_logs"(
+  "id" integer primary key autoincrement not null,
+  "libelle" varchar not null,
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("user_id") references "users"("id")
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -337,3 +424,10 @@ INSERT INTO migrations VALUES(22,'2025_11_09_200240_create_tiers_supplies_table'
 INSERT INTO migrations VALUES(23,'2025_11_09_200620_create_tiers_customers_table',1);
 INSERT INTO migrations VALUES(24,'2025_11_09_200904_create_tiers_logs_table',1);
 INSERT INTO migrations VALUES(25,'2025_11_09_201111_create_tiers_banks_table',1);
+INSERT INTO migrations VALUES(26,'2025_11_10_225856_create_chantiers_table',1);
+INSERT INTO migrations VALUES(27,'2025_11_10_230440_create_chantiers_tasks_table',1);
+INSERT INTO migrations VALUES(28,'2025_11_10_231021_create_chantiers_depenses_table',1);
+INSERT INTO migrations VALUES(29,'2025_11_10_231404_create_chantiers_interventions_table',1);
+INSERT INTO migrations VALUES(30,'2025_11_10_231829_create_chantiers_addresses_table',1);
+INSERT INTO migrations VALUES(31,'2025_11_10_232057_create_chantiers_user_table',1);
+INSERT INTO migrations VALUES(32,'2025_11_10_232256_create_chantiers_logs_table',1);
