@@ -13,51 +13,37 @@ Cette roadmap présente la vision et la planification du développement de **Bat
 ---
 
 ## Diagramme de Gantt
-mermaid 
-    gantt 
-        title Roadmap Batistack ERP 
-        dateFormat YYYY-MM-DD
-        section Phase 1 - Core
-        Core Applicatif           :done, core1, 2025-01-01, 2025-10-31
-        Infrastructure            :done, infra1, 2025-01-01, 2025-10-31
-        
-        section Phase 2 - Modules Fondamentaux
-        Module Tiers              :active, tiers1, 2025-10-01, 2025-12-31
-        Module Articles           :active, articles1, 2025-10-15, 2026-01-31
-        Module Commerces          :active, commerces1, 2025-11-01, 2026-02-28
-        
-        section Phase 3 - Gestion Financière
-        Facturations & Paiements  :crit, factu1, 2026-02-01, 2026-04-30
-        Banques & Caisses         :crit, banque1, 2026-03-01, 2026-05-31
-        Comptabilité              :crit, compta1, 2026-04-01, 2026-06-30
-        
-        section Phase 4 - Projets BTP
-        Module Chantiers          :chantier1, 2026-06-01, 2026-09-30
-        Module Plannings          :planning1, 2026-07-01, 2026-10-31
-        
-        section Phase 5 - RH & Paie
-        Module GHR                :rh1, 2026-10-01, 2027-01-31
-        Module Paie               :paie1, 2026-11-01, 2027-02-28
-        Module Note de Frais      :ndf1, 2026-12-01, 2027-02-28
-        
-        section Phase 6 - Modules Avancés
-        Module GPAO               :gpao1, 2027-02-01, 2027-04-30
-        Module GED                :ged1, 2027-03-01, 2027-05-31
-        Module Signature          :sign1, 2027-03-01, 2027-06-30
-        Module Flottes            :flottes1, 2027-04-01, 2027-06-30
-        Module Locations          :locations1, 2027-05-01, 2027-07-31
-        
-        section Phase 7 - Innovation
-        Module 3D Vision          :3d1, 2027-07-01, 2027-10-31
-        
-        section Phase 8 - Options Premium
-        Agrégation Bancaire       :bankin1, 2027-09-01, 2027-12-31
-        Pack Signature            :pack1, 2027-10-01, 2027-12-31
-        Sauvegarde & Rétention    :backup1, 2027-10-01, 2027-12-31
-        Extension Stockage        :storage1, 2027-11-01, 2027-12-31
+gantt
+    title Roadmap Détaillée - Batistack ERP
+    dateFormat  YYYY-MM-DD
 
+    %% Marqueur pour la date actuelle (11 Nov 2025)
+    todayMarker stroke-width:3px,stroke:#E040FB,opacity:0.6
+    
+    %% --- Phase 1: Terminée ---
+    section Phase 1 - Core (Terminé)
+    Core Applicatif & Infra       :done, core, 2025-01-01, 2025-10-31
 
----
+    %% --- Phase 2: En cours (détaillée) ---
+    section Phase 2 - Modules Fondamentaux (En cours)
+    %% Module Tiers (Oct-Déc 2025)
+    Tiers: CRUD Clients/Fourn.     :done,    t1, 2025-10-01, 30d
+    Tiers: Contacts & Historique  :active,  t2, after t1, 40d
+    Tiers: Segmentation & I/O     :         t3, 2025-12-01, 30d
+    
+    %% Module Articles (Oct 2025 - Jan 2026)
+    Articles: Catalogue & Unités  :done,    a1, 2025-10-15, 30d
+    Articles: Classification      :active,  a2, after a1, 30d
+    Articles: Stocks de base      :         a3, 2025-12-01, 30d
+    Articles: Tarifs & Codes      :         a4, 2026-01-01, 30d
+
+    %% Module Commerces (Nov 2025 - Fév 2026)
+    Commerces: Devis               :active,  c1, 2025-11-01, 30d
+    Commerces: Commandes Clients  :         c2, 2025-12-01, 30d
+    Commerces: Suivi Livraisons   :         c3, 2026-01-01, 30d
+    Commerces: Retours & Templates :         c4, 2026-02-01, 28d
+
+    %% --- Phase 3: Planifiée (détaillée
 
 ## Phase 1 : Fondations du Core (Jan-Oct 2025) ✅
 
