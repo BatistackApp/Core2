@@ -6,10 +6,11 @@ use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Zap\Models\Concerns\HasSchedules;
 
 class Tiers extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSchedules;
 
     public $timestamps = false;
     protected $guarded = [];
