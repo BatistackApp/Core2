@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models\Commerces;
+
+use App\Enums\Commerces\StatusCommande;
+use App\Models\Chantiers\Chantiers;
+use App\Models\Tiers\Tiers;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Commande extends Model
+{
+    use HasFactory;
+
+    public $timestamps = false;
+    protected $guarded = [];
+
+    public function devis(): BelongsTo
+    {
+        return $this->belongsTo(Devis::class);
+    }
+
+    public function chantiers(): BelongsTo
+    {
+        return $this->belongsTo(Chantiers::class);
+    }
+
+    public function tiers(): BelongsTo
+    {
+        return $this->belongsTo(Tiers::class);
+    }
+
+    public function responsable(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responsable_id');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date_commande' => 'date',
+            'status' => StatusCommande::class,
+        ];
+    }
+}
