@@ -199,12 +199,6 @@ CREATE UNIQUE INDEX "personal_access_tokens_token_unique" on "personal_access_to
 CREATE INDEX "personal_access_tokens_expires_at_index" on "personal_access_tokens"(
   "expires_at"
 );
-CREATE TABLE IF NOT EXISTS "settings"(
-  "id" integer primary key autoincrement not null,
-  "key" varchar not null,
-  "value" text
-);
-CREATE UNIQUE INDEX "settings_key_unique" on "settings"("key");
 CREATE TABLE IF NOT EXISTS "notifications"(
   "id" varchar not null,
   "type" varchar not null,
@@ -219,6 +213,15 @@ CREATE TABLE IF NOT EXISTS "notifications"(
 CREATE INDEX "notifications_notifiable_type_notifiable_id_index" on "notifications"(
   "notifiable_type",
   "notifiable_id"
+);
+CREATE TABLE IF NOT EXISTS "warehouses"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "address" varchar not null,
+  "code_postal" varchar not null,
+  "ville" varchar not null,
+  "pays" varchar not null,
+  "is_default" tinyint(1) not null default '1'
 );
 CREATE TABLE IF NOT EXISTS "tiers"(
   "id" integer primary key autoincrement not null,
@@ -311,6 +314,75 @@ CREATE TABLE IF NOT EXISTS "tiers_banks"(
   foreign key("tiers_id") references "tiers"("id") on delete cascade on update cascade,
   foreign key("bank_id") references "banks"("id")
 );
+CREATE TABLE IF NOT EXISTS "units"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "symbol" varchar not null,
+  "type" varchar
+);
+CREATE TABLE IF NOT EXISTS "article_categories"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "description" text,
+  "parent_id" integer,
+  foreign key("parent_id") references "article_categories"("id") on delete set null
+);
+CREATE TABLE IF NOT EXISTS "articles"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "description" text,
+  "reference" varchar,
+  "barcode" varchar,
+  "type_article" varchar not null default 'material',
+  "is_stock_managed" tinyint(1) not null default '0',
+  "stock_alert_threshold" numeric,
+  "price_achat_ht" numeric,
+  "prix_vente_ht" numeric,
+  "vat_rate" numeric not null default '20',
+  "is_active" tinyint(1) not null default '1',
+  "unit_id" integer,
+  "article_category_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "deleted_at" datetime,
+  foreign key("unit_id") references "units"("id") on delete set null,
+  foreign key("article_category_id") references "article_categories"("id") on delete set null
+);
+CREATE TABLE IF NOT EXISTS "article_prices"(
+  "id" integer primary key autoincrement not null,
+  "articles_id" integer not null,
+  "tiers_id" integer,
+  "price_level_name" varchar,
+  "min_quantity" numeric not null,
+  "price_ht" numeric not null,
+  foreign key("articles_id") references "articles"("id") on delete cascade,
+  foreign key("tiers_id") references "tiers"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "article_stocks"(
+  "id" integer primary key autoincrement not null,
+  "articles_id" integer not null,
+  "warehouse_id" integer not null,
+  "quantity" numeric not null default '0',
+  "quantity_reserved" numeric not null default '0',
+  foreign key("articles_id") references "articles"("id") on delete cascade,
+  foreign key("warehouse_id") references "warehouses"("id") on delete cascade
+);
+CREATE UNIQUE INDEX "article_stocks_articles_id_warehouse_id_unique" on "article_stocks"(
+  "articles_id",
+  "warehouse_id"
+);
+CREATE TABLE IF NOT EXISTS "article_ouvrages"(
+  "id" integer primary key autoincrement not null,
+  "parent_article_id" integer not null,
+  "child_article_id" integer not null,
+  "quantity" numeric not null,
+  foreign key("parent_article_id") references "articles"("id") on delete cascade,
+  foreign key("child_article_id") references "articles"("id") on delete cascade
+);
+CREATE UNIQUE INDEX "article_ouvrages_parent_article_id_child_article_id_unique" on "article_ouvrages"(
+  "parent_article_id",
+  "child_article_id"
+);
 CREATE TABLE IF NOT EXISTS "chantiers"(
   "id" integer primary key autoincrement not null,
   "libelle" varchar not null,
@@ -360,7 +432,7 @@ CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
 );
 CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
   "id" integer primary key autoincrement not null,
-  "date_intervention" date not null default '2025-11-10 23:26:49',
+  "date_intervention" date not null default '2025-11-11 18:24:55',
   "description" text not null,
   "temps" numeric,
   "facturable" tinyint(1) not null default '1',
@@ -398,6 +470,189 @@ CREATE TABLE IF NOT EXISTS "chantiers_logs"(
   "updated_at" datetime,
   foreign key("user_id") references "users"("id")
 );
+CREATE TABLE IF NOT EXISTS "chantiers_postes"(
+  "id" integer primary key autoincrement not null,
+  "description" varchar not null,
+  "quantity" numeric not null,
+  "unit" varchar,
+  "unit_price_ht" numeric not null,
+  "total_budget_amount" numeric not null,
+  "current_progress_percentage" numeric not null,
+  "chantiers_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "deleted_at" datetime
+);
+CREATE TABLE IF NOT EXISTS "devis"(
+  "id" integer primary key autoincrement not null,
+  "num_devis" varchar not null,
+  "date_devis" date not null,
+  "date_validate" date,
+  "status" varchar not null default 'draft',
+  "amount_ht" numeric not null,
+  "amount_ttc" numeric not null,
+  "notes" text,
+  "chantiers_id" integer,
+  "tiers_id" integer not null,
+  "responsable_id" integer not null,
+  foreign key("tiers_id") references "tiers"("id") on update cascade,
+  foreign key("responsable_id") references "users"("id") on update cascade
+);
+CREATE TABLE IF NOT EXISTS "devis_lignes"(
+  "id" integer primary key autoincrement not null,
+  "type" varchar not null,
+  "libelle" varchar not null,
+  "description" text,
+  "qte" numeric not null,
+  "puht" numeric not null,
+  "amount_ht" numeric not null,
+  "tva_rate" numeric not null,
+  "devis_id" integer not null,
+  foreign key("devis_id") references "devis"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "commandes"(
+  "id" integer primary key autoincrement not null,
+  "num_commande" varchar not null,
+  "date_commande" date not null,
+  "status" varchar not null default 'pending',
+  "amount_ht" numeric not null,
+  "amount_ttc" numeric not null,
+  "devis_id" integer,
+  "chantiers_id" integer,
+  "tiers_id" integer not null,
+  "responsable_id" integer not null
+);
+CREATE TABLE IF NOT EXISTS "commande_lignes"(
+  "id" integer primary key autoincrement not null,
+  "type" varchar not null,
+  "libelle" varchar not null,
+  "description" text,
+  "qte" numeric not null,
+  "puht" numeric not null,
+  "amount_ht" numeric not null,
+  "tva_rate" numeric not null,
+  "commande_id" integer not null,
+  foreign key("commande_id") references "commandes"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "settings"(
+  "id" integer primary key autoincrement not null,
+  "group" varchar not null,
+  "name" varchar not null,
+  "locked" tinyint(1) not null default '0',
+  "payload" text not null,
+  "created_at" datetime,
+  "updated_at" datetime
+);
+CREATE UNIQUE INDEX "settings_group_name_unique" on "settings"(
+  "group",
+  "name"
+);
+CREATE TABLE IF NOT EXISTS "factures"(
+  "id" integer primary key autoincrement not null,
+  "num_facture" varchar not null,
+  "status" varchar not null default 'draft',
+  "type_facture" varchar not null default 'standard',
+  "date_facture" date not null,
+  "date_echue" date not null,
+  "situation_started_at" date,
+  "situtation_ended_at" date,
+  "progress_percentage" numeric,
+  "total_work_to_date" numeric,
+  "previous_situations_total" numeric,
+  "guarantee_retention_percentage" numeric,
+  "guarantee_retention_amount" numeric,
+  "guarantee_released" tinyint(1) not null default '0',
+  "amount_ht" numeric not null,
+  "amount_tva" numeric not null,
+  "amount_ttc" numeric not null,
+  "notes" text,
+  "pdf_path" varchar,
+  "user_id" integer,
+  "tiers_id" integer not null,
+  "chantiers_id" integer,
+  "commande_id" integer,
+  "parent_facture_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "deleted_at" datetime,
+  foreign key("user_id") references "users"("id") on delete set null,
+  foreign key("tiers_id") references "tiers"("id") on delete restrict,
+  foreign key("chantiers_id") references "chantiers"("id") on delete restrict,
+  foreign key("commande_id") references "commandes"("id") on delete set null,
+  foreign key("parent_facture_id") references "factures"("id") on delete set null
+);
+CREATE UNIQUE INDEX "factures_num_facture_unique" on "factures"("num_facture");
+CREATE TABLE IF NOT EXISTS "facture_lignes"(
+  "id" integer primary key autoincrement not null,
+  "description" varchar not null,
+  "vat_rate" numeric not null default '20',
+  "quantity" numeric,
+  "unit" varchar,
+  "unit_price_ht" numeric,
+  "total_budget_amount" numeric,
+  "previous_progress_percentage" numeric,
+  "current_progress_percentage" numeric,
+  "amount_ht" numeric not null,
+  "amount_tva" numeric not null,
+  "amount_tc" numeric not null,
+  "facture_id" integer not null,
+  "chantiers_poste_id" integer,
+  "articles_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("facture_id") references "factures"("id") on delete cascade,
+  foreign key("chantiers_poste_id") references "chantiers_postes"("id") on delete set null,
+  foreign key("articles_id") references "articles"("id") on delete set null
+);
+CREATE TABLE IF NOT EXISTS "payments"(
+  "id" integer primary key autoincrement not null,
+  "tiers_id" integer not null,
+  "amount" numeric not null,
+  "paid_at" date not null,
+  "mode_reglement_id" integer not null,
+  "reference" varchar,
+  "status" varchar not null default 'unallocated',
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("tiers_id") references "tiers"("id") on delete restrict
+);
+CREATE TABLE IF NOT EXISTS "facture_payment"(
+  "id" integer primary key autoincrement not null,
+  "facture_id" integer not null,
+  "payment_id" integer not null,
+  "amount_applied" numeric not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("facture_id") references "factures"("id") on delete cascade,
+  foreign key("payment_id") references "payments"("id") on delete cascade
+);
+CREATE UNIQUE INDEX "facture_payment_facture_id_payment_id_unique" on "facture_payment"(
+  "facture_id",
+  "payment_id"
+);
+CREATE TABLE IF NOT EXISTS "facture_recurrings"(
+  "id" integer primary key autoincrement not null,
+  "tiers_id" integer not null,
+  "status" varchar not null default 'active',
+  "frequency" varchar not null default 'monthly',
+  "start_at" date not null,
+  "end_at" date,
+  "last_generated_at" date,
+  "next_generation_at" date,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("tiers_id") references "tiers"("id") on delete restrict
+);
+CREATE TABLE IF NOT EXISTS "facture_reminders"(
+  "id" integer primary key autoincrement not null,
+  "facture_id" integer not null,
+  "level" integer not null,
+  "status" varchar not null,
+  "send_at" datetime not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("facture_id") references "factures"("id") on delete cascade
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -414,20 +669,37 @@ INSERT INTO migrations VALUES(12,'2025_10_16_202524_create_banks_table',1);
 INSERT INTO migrations VALUES(13,'2025_10_17_130557_create_condition_reglements_table',1);
 INSERT INTO migrations VALUES(14,'2025_10_17_130847_create_mode_reglements_table',1);
 INSERT INTO migrations VALUES(15,'2025_11_01_195109_create_personal_access_tokens_table',1);
-INSERT INTO migrations VALUES(16,'2025_11_01_195915_create_settings_table',1);
-INSERT INTO migrations VALUES(17,'2025_11_01_195916_add_settings_team_field',1);
-INSERT INTO migrations VALUES(18,'2025_11_01_200421_create_notifications_table',1);
-INSERT INTO migrations VALUES(19,'2025_11_09_192206_create_tiers_table',1);
-INSERT INTO migrations VALUES(20,'2025_11_09_194030_create_tiers_addresses_table',1);
-INSERT INTO migrations VALUES(21,'2025_11_09_195856_create_tiers_contacts_table',1);
-INSERT INTO migrations VALUES(22,'2025_11_09_200240_create_tiers_supplies_table',1);
-INSERT INTO migrations VALUES(23,'2025_11_09_200620_create_tiers_customers_table',1);
-INSERT INTO migrations VALUES(24,'2025_11_09_200904_create_tiers_logs_table',1);
-INSERT INTO migrations VALUES(25,'2025_11_09_201111_create_tiers_banks_table',1);
-INSERT INTO migrations VALUES(26,'2025_11_10_225856_create_chantiers_table',1);
-INSERT INTO migrations VALUES(27,'2025_11_10_230440_create_chantiers_tasks_table',1);
-INSERT INTO migrations VALUES(28,'2025_11_10_231021_create_chantiers_depenses_table',1);
-INSERT INTO migrations VALUES(29,'2025_11_10_231404_create_chantiers_interventions_table',1);
-INSERT INTO migrations VALUES(30,'2025_11_10_231829_create_chantiers_addresses_table',1);
-INSERT INTO migrations VALUES(31,'2025_11_10_232057_create_chantiers_user_table',1);
-INSERT INTO migrations VALUES(32,'2025_11_10_232256_create_chantiers_logs_table',1);
+INSERT INTO migrations VALUES(16,'2025_11_01_200421_create_notifications_table',1);
+INSERT INTO migrations VALUES(17,'2025_11_02_000000_create_warehouses_table',1);
+INSERT INTO migrations VALUES(18,'2025_11_09_192206_create_tiers_table',1);
+INSERT INTO migrations VALUES(19,'2025_11_09_194030_create_tiers_addresses_table',1);
+INSERT INTO migrations VALUES(20,'2025_11_09_195856_create_tiers_contacts_table',1);
+INSERT INTO migrations VALUES(21,'2025_11_09_200240_create_tiers_supplies_table',1);
+INSERT INTO migrations VALUES(22,'2025_11_09_200620_create_tiers_customers_table',1);
+INSERT INTO migrations VALUES(23,'2025_11_09_200904_create_tiers_logs_table',1);
+INSERT INTO migrations VALUES(24,'2025_11_09_201111_create_tiers_banks_table',1);
+INSERT INTO migrations VALUES(25,'2025_11_10_000000_create_units_table',1);
+INSERT INTO migrations VALUES(26,'2025_11_10_000001_create_article_categories_table',1);
+INSERT INTO migrations VALUES(27,'2025_11_10_000002_create_articles_table',1);
+INSERT INTO migrations VALUES(28,'2025_11_10_000003_create_article_prices_table',1);
+INSERT INTO migrations VALUES(29,'2025_11_10_000004_create_article_stocks_table',1);
+INSERT INTO migrations VALUES(30,'2025_11_10_000005_create_article_ouvrages_table',1);
+INSERT INTO migrations VALUES(31,'2025_11_10_225856_create_chantiers_table',1);
+INSERT INTO migrations VALUES(32,'2025_11_10_230440_create_chantiers_tasks_table',1);
+INSERT INTO migrations VALUES(33,'2025_11_10_231021_create_chantiers_depenses_table',1);
+INSERT INTO migrations VALUES(34,'2025_11_10_231404_create_chantiers_interventions_table',1);
+INSERT INTO migrations VALUES(35,'2025_11_10_231829_create_chantiers_addresses_table',1);
+INSERT INTO migrations VALUES(36,'2025_11_10_232057_create_chantiers_user_table',1);
+INSERT INTO migrations VALUES(37,'2025_11_10_232256_create_chantiers_logs_table',1);
+INSERT INTO migrations VALUES(38,'2025_11_10_235000_create_chantiers_postes_table',1);
+INSERT INTO migrations VALUES(39,'2025_11_11_140543_create_devis_table',1);
+INSERT INTO migrations VALUES(40,'2025_11_11_141151_create_devis_lignes_table',1);
+INSERT INTO migrations VALUES(41,'2025_11_11_141724_create_commandes_table',1);
+INSERT INTO migrations VALUES(42,'2025_11_11_142221_create_commande_lignes_table',1);
+INSERT INTO migrations VALUES(43,'2025_11_11_155516_create_settings_table',1);
+INSERT INTO migrations VALUES(44,'2025_11_11_162713_create_factures_table',1);
+INSERT INTO migrations VALUES(45,'2025_11_11_164828_create_facture_lignes_table',1);
+INSERT INTO migrations VALUES(46,'2025_11_11_180010_create_payments_table',1);
+INSERT INTO migrations VALUES(47,'2025_11_11_180417_create_facture_payment_table',1);
+INSERT INTO migrations VALUES(48,'2025_11_11_180853_create_facture_recurrings_table',1);
+INSERT INTO migrations VALUES(49,'2025_11_11_181706_create_facture_reminders_table',1);
