@@ -11,40 +11,6 @@ Cette roadmap présente la vision et la planification du développement de **Bat
 - 💡 **En réflexion** : À l'étude, pas encore planifié
 
 ---
-
-## Diagramme de Gantt
-gantt
-    title Roadmap Détaillée - Batistack ERP
-    dateFormat  YYYY-MM-DD
-
-    %% Marqueur pour la date actuelle (11 Nov 2025)
-    todayMarker stroke-width:3px,stroke:#E040FB,opacity:0.6
-    
-    %% --- Phase 1: Terminée ---
-    section Phase 1 - Core (Terminé)
-    Core Applicatif & Infra       :done, core, 2025-01-01, 2025-10-31
-
-    %% --- Phase 2: En cours (détaillée) ---
-    section Phase 2 - Modules Fondamentaux (En cours)
-    %% Module Tiers (Oct-Déc 2025)
-    Tiers: CRUD Clients/Fourn.     :done,    t1, 2025-10-01, 30d
-    Tiers: Contacts & Historique  :active,  t2, after t1, 40d
-    Tiers: Segmentation & I/O     :         t3, 2025-12-01, 30d
-    
-    %% Module Articles (Oct 2025 - Jan 2026)
-    Articles: Catalogue & Unités  :done,    a1, 2025-10-15, 30d
-    Articles: Classification      :active,  a2, after a1, 30d
-    Articles: Stocks de base      :         a3, 2025-12-01, 30d
-    Articles: Tarifs & Codes      :         a4, 2026-01-01, 30d
-
-    %% Module Commerces (Nov 2025 - Fév 2026)
-    Commerces: Devis               :active,  c1, 2025-11-01, 30d
-    Commerces: Commandes Clients  :         c2, 2025-12-01, 30d
-    Commerces: Suivi Livraisons   :         c3, 2026-01-01, 30d
-    Commerces: Retours & Templates :         c4, 2026-02-01, 28d
-
-    %% --- Phase 3: Planifiée (détaillée
-
 ## Phase 1 : Fondations du Core (Jan-Oct 2025) ✅
 
 ### Core - Cœur Applicatif
