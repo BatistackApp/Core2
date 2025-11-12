@@ -27,5 +27,7 @@ class ArticlePrice extends Model
 
     protected $casts = [
         'price_level_name' => TiersType::class,
+        'min_quantity' => 'decimal:2',
+        'price_ht' => 'decimal:2',
     ];
 }

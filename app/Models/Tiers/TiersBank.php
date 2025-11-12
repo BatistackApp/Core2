@@ -3,10 +3,13 @@
 namespace App\Models\Tiers;
 
 use App\Models\Core\Bank;
+use App\Observer\Tiers\TiersBankObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy([TiersBankObserver::class])]
 class TiersBank extends Model
 {
     use HasFactory;
@@ -28,6 +31,7 @@ class TiersBank extends Model
     {
         return [
             'default' => 'boolean',
+            'iban' => 'encrypted',
         ];
     }
 }

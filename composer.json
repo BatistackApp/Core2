@@ -15,6 +15,7 @@
         "laravel/horizon": "^5.38",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "laraveljutsu/zap": "^1.5",
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
         "opcodesio/log-viewer": "^3.21",
@@ -24,6 +25,7 @@
         "rap2hpoutre/fast-excel": "^5.6",
         "spatie/laravel-backup": "^9.3",
         "spatie/laravel-settings": "^3.5",
+        "spatie/laravel-tags": "^4.10",
         "thibaud-dauce/laravel-notifications-mattermost": "^1.7",
         "wnx/laravel-backup-restore": "^1.7"
     },

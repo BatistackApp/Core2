@@ -8,10 +8,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Zap\Models\Concerns\HasSchedules;
 
 class Chantiers extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSchedules;
     protected $guarded = [];
 
     public function tiers(): BelongsTo
