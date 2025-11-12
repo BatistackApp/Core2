@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\GED\Document;
 use App\Models\GPAO\ProductionOrder;
 use App\Models\GPAO\ProductionOrderComponent;
 use App\Models\GPAO\ProductionOrderOperation;
 use App\Models\NoteFrais\Expense;
 use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
+use App\Observer\GED\DocumentObserver;
 use App\Observer\GPAO\ProductionOrderComponentObserver;
 use App\Observer\GPAO\ProductionOrderObserver;
 use App\Observer\GPAO\ProductionOrderOperationObserver;
@@ -39,5 +41,7 @@ class AppServiceProvider extends ServiceProvider
         ProductionOrder::observe(ProductionOrderObserver::class);
         ProductionOrderComponent::observe(ProductionOrderComponentObserver::class);
         ProductionOrderOperation::observe(ProductionOrderOperationObserver::class);
+
+        Document::observe(DocumentObserver::class);
     }
 }
