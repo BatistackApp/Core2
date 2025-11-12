@@ -301,8 +301,8 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->icon(Heroicon::Trash)
                     ->tooltip("Supprimer")
                     ->requiresConfirmation()
-                    ->using(function (array $data) {
-                        dd($data);
+                    ->using(function (?Model $record) {
+                        $record->delete();
                     })
             ]);
     }
