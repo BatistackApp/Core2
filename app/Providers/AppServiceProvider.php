@@ -15,6 +15,7 @@ use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
 use App\Models\Signature\SignatureProcedure;
 use App\Models\Signature\SignatureSigner;
+use App\Models\Vision\BimModel;
 use App\Observer\Flottes\VehicleTollLogObserver;
 use App\Observer\Flottes\VehicleUsageLogObserver;
 use App\Observer\GED\DocumentObserver;
@@ -27,6 +28,7 @@ use App\Observer\NoteFrais\ExpenseObserver;
 use App\Observer\NoteFrais\ExpenseReceiptObserver;
 use App\Observer\NoteFrais\ExpenseReportObserver;
 use App\Observer\Signature\SignatureProcedureObserver;
+use App\Observer\Vision\BimModelObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -62,5 +64,7 @@ class AppServiceProvider extends ServiceProvider
 
         RentalContract::observe(RentalContractObserver::class);
         RentalContractLine::observe(RentalContractLineObserver::class);
+
+        BimModel::observe(BimModelObserver::class);
     }
 }
