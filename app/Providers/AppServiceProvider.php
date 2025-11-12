@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Flottes\VehicleTollLog;
+use App\Models\Flottes\VehicleUsageLog;
 use App\Models\GED\Document;
 use App\Models\GPAO\ProductionOrder;
 use App\Models\GPAO\ProductionOrderComponent;
@@ -11,6 +13,8 @@ use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
 use App\Models\Signature\SignatureProcedure;
 use App\Models\Signature\SignatureSigner;
+use App\Observer\Flottes\VehicleTollLogObserver;
+use App\Observer\Flottes\VehicleUsageLogObserver;
 use App\Observer\GED\DocumentObserver;
 use App\Observer\GPAO\ProductionOrderComponentObserver;
 use App\Observer\GPAO\ProductionOrderObserver;
@@ -19,7 +23,6 @@ use App\Observer\NoteFrais\ExpenseObserver;
 use App\Observer\NoteFrais\ExpenseReceiptObserver;
 use App\Observer\NoteFrais\ExpenseReportObserver;
 use App\Observer\Signature\SignatureProcedureObserver;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -49,5 +52,8 @@ class AppServiceProvider extends ServiceProvider
 
         SignatureProcedure::observe(SignatureProcedureObserver::class);
         SignatureSigner::observe(SignatureProcedureObserver::class);
+
+        VehicleTollLog::observe(VehicleTollLogObserver::class);
+        VehicleUsageLog::observe(VehicleUsageLogObserver::class);
     }
 }
