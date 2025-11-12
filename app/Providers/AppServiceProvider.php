@@ -15,6 +15,8 @@ use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
 use App\Models\Signature\SignatureProcedure;
 use App\Models\Signature\SignatureSigner;
+use App\Models\Tiers\Tiers;
+use App\Models\Tiers\TiersBank;
 use App\Models\Vision\BimModel;
 use App\Observer\Flottes\VehicleTollLogObserver;
 use App\Observer\Flottes\VehicleUsageLogObserver;
@@ -28,6 +30,8 @@ use App\Observer\NoteFrais\ExpenseObserver;
 use App\Observer\NoteFrais\ExpenseReceiptObserver;
 use App\Observer\NoteFrais\ExpenseReportObserver;
 use App\Observer\Signature\SignatureProcedureObserver;
+use App\Observer\Tiers\TiersBankObserver;
+use App\Observer\Tiers\TiersObserver;
 use App\Observer\Vision\BimModelObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -46,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Tiers::observe(TiersObserver::class);
+        TiersBank::observe(TiersBankObserver::class);
+
         Expense::observe(ExpenseObserver::class);
         ExpenseReceipt::observe(ExpenseReceiptObserver::class);
         ExpenseReport::observe(ExpenseReportObserver::class);

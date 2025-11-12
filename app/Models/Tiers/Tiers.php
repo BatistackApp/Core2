@@ -4,10 +4,15 @@ namespace App\Models\Tiers;
 
 use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;
+use App\Observer\Tiers\TiersObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Zap\Models\Concerns\HasSchedules;
 
+#[ObservedBy([TiersObserver::class])]
 class Tiers extends Model
 {
     use HasFactory, HasSchedules;
@@ -20,31 +25,57 @@ class Tiers extends Model
         return $this->hasMany(TiersAddress::class);
     }
 
-    public function getNextId(): int|float
+    /**
+     * Obtenir le profil Client (si la nature est Client).
+     * [cite: 2025_11_09_200620_create_tiers_customers_table.php]
+     */
+    public function customerProfile(): HasOne
     {
-        return $this->id ? $this->id + 1 : 1;
+        return $this->hasOne(TiersCustomer::class);
     }
 
-    public function getNextClientCode(): string
+    /**
+     * Obtenir le profil Fournisseur (si la nature est Fournisseur).
+     * [cite: 2025_11_09_200240_create_tiers_supplies_table.php]
+     */
+    public function supplyProfile(): HasOne
     {
-        $cus = 'CLT'.now()->year.'-';
-
-        return $this->id ? $cus.$this->id + 1 : $cus.'1';
+        return $this->hasOne(TiersSupply::class);
     }
 
-    public function getNextFournisseurCode(): string
+    /**
+     * Obtenir les contacts associés à ce tiers.
+     * [cite: 2025_11_09_195856_create_tiers_contacts_table.php]
+     */
+    public function contacts(): HasMany
     {
-        $cus = 'FOUR'.now()->year.'-';
+        return $this->hasMany(TiersContact::class);
+    }
 
-        return $this->id ? $cus.$this->id + 1 : $cus.'1';
+    /**
+     * Obtenir les comptes bancaires associés à ce tiers.
+     * [cite: 2025_11_09_201111_create_tiers_banks_table.php]
+     */
+    public function banks(): HasMany
+    {
+        return $this->hasMany(TiersBank::class);
+    }
+
+    /**
+     * Obtenir l'historique (logs) associé à ce tiers.
+     * [cite: 2025_11_09_200904_create_tiers_logs_table.php]
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(TiersLog::class);
     }
 
     protected function casts(): array
     {
         return [
+            'nature' => TiersNature::class, // [cite: TiersNature.php]
+            'type' => TiersType::class,     // [cite: TiersType.php]
             'tva' => 'boolean',
-            'nature' => TiersNature::class,
-            'type' => TiersType::class,
         ];
     }
 
