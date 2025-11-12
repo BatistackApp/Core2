@@ -8,6 +8,8 @@ use App\Models\GED\Document;
 use App\Models\GPAO\ProductionOrder;
 use App\Models\GPAO\ProductionOrderComponent;
 use App\Models\GPAO\ProductionOrderOperation;
+use App\Models\Locations\RentalContract;
+use App\Models\Locations\RentalContractLine;
 use App\Models\NoteFrais\Expense;
 use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
@@ -19,6 +21,8 @@ use App\Observer\GED\DocumentObserver;
 use App\Observer\GPAO\ProductionOrderComponentObserver;
 use App\Observer\GPAO\ProductionOrderObserver;
 use App\Observer\GPAO\ProductionOrderOperationObserver;
+use App\Observer\Locations\RentalContractLineObserver;
+use App\Observer\Locations\RentalContractObserver;
 use App\Observer\NoteFrais\ExpenseObserver;
 use App\Observer\NoteFrais\ExpenseReceiptObserver;
 use App\Observer\NoteFrais\ExpenseReportObserver;
@@ -55,5 +59,8 @@ class AppServiceProvider extends ServiceProvider
 
         VehicleTollLog::observe(VehicleTollLogObserver::class);
         VehicleUsageLog::observe(VehicleUsageLogObserver::class);
+
+        RentalContract::observe(RentalContractObserver::class);
+        RentalContractLine::observe(RentalContractLineObserver::class);
     }
 }

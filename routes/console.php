@@ -26,3 +26,8 @@ Schedule::command(\App\Console\Commands\ImportUlysTollLogsCommand::class)
 Schedule::command(\App\Console\Commands\SendFleetRemindersCommand::class)
     ->dailyAt('08:30')
     ->description('Send fleet reminders');
+
+// Locations
+Schedule::command(\App\Console\Commands\GenerateRentalInvoicesCommand::class)
+    ->dailyAt('01:00')
+    ->description('Generate rental invoices');
