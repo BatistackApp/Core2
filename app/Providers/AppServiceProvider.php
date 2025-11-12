@@ -9,6 +9,8 @@ use App\Models\GPAO\ProductionOrderOperation;
 use App\Models\NoteFrais\Expense;
 use App\Models\NoteFrais\ExpenseReceipt;
 use App\Models\NoteFrais\ExpenseReport;
+use App\Models\Signature\SignatureProcedure;
+use App\Models\Signature\SignatureSigner;
 use App\Observer\GED\DocumentObserver;
 use App\Observer\GPAO\ProductionOrderComponentObserver;
 use App\Observer\GPAO\ProductionOrderObserver;
@@ -16,6 +18,7 @@ use App\Observer\GPAO\ProductionOrderOperationObserver;
 use App\Observer\NoteFrais\ExpenseObserver;
 use App\Observer\NoteFrais\ExpenseReceiptObserver;
 use App\Observer\NoteFrais\ExpenseReportObserver;
+use App\Observer\Signature\SignatureProcedureObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -43,5 +46,8 @@ class AppServiceProvider extends ServiceProvider
         ProductionOrderOperation::observe(ProductionOrderOperationObserver::class);
 
         Document::observe(DocumentObserver::class);
+
+        SignatureProcedure::observe(SignatureProcedureObserver::class);
+        SignatureSigner::observe(SignatureProcedureObserver::class);
     }
 }

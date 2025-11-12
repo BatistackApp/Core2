@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
             '3d-vision' => redirect()->route('3d-vision.index'),
             'flotte' => redirect()->route('flotte.index'),
             'notes-frais' => redirect()->route('notes-frais.index'),
+            'signature' => redirect()->route('signature.index'),
             default => redirect()->route('home'),
         };
     })->name('module.redirect');
