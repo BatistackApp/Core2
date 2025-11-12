@@ -9,5 +9,10 @@ Artisan::command('inspire', function () {
 
 
 // Note de Frais
-Schedule::command(\App\Console\Commands\SendExpenseReportRemindersCommand::class)->dailyAt('09:00')
+Schedule::command(\App\Console\Commands\SendExpenseReportRemindersCommand::class)
+    ->dailyAt('09:00')
     ->description('Send expense report reminders to users');
+
+Schedule::command(\App\Console\Commands\CheckProductionOrderDelaysCommand::class)
+    ->dailyAt('08:00')
+    ->description('Check production order delays');
