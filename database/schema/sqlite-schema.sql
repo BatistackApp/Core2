@@ -494,7 +494,7 @@ CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
 );
 CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
   "id" integer primary key autoincrement not null,
-  "date_intervention" date not null default '2025-11-12 18:01:19',
+  "date_intervention" date not null default '2025-11-12 23:15:49',
   "description" text not null,
   "temps" numeric,
   "facturable" tinyint(1) not null default '1',
@@ -1437,6 +1437,43 @@ CREATE UNIQUE INDEX "bim_link_unique_index" on "bim_links"(
   "linkable_id",
   "linkable_type"
 );
+CREATE TABLE IF NOT EXISTS "imports"(
+  "id" integer primary key autoincrement not null,
+  "completed_at" datetime,
+  "file_name" varchar not null,
+  "file_path" varchar not null,
+  "importer" varchar not null,
+  "processed_rows" integer not null default '0',
+  "total_rows" integer not null,
+  "successful_rows" integer not null default '0',
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("user_id") references "users"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "exports"(
+  "id" integer primary key autoincrement not null,
+  "completed_at" datetime,
+  "file_disk" varchar not null,
+  "file_name" varchar,
+  "exporter" varchar not null,
+  "processed_rows" integer not null default '0',
+  "total_rows" integer not null,
+  "successful_rows" integer not null default '0',
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("user_id") references "users"("id") on delete cascade
+);
+CREATE TABLE IF NOT EXISTS "failed_import_rows"(
+  "id" integer primary key autoincrement not null,
+  "data" text not null,
+  "import_id" integer not null,
+  "validation_error" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("import_id") references "imports"("id") on delete cascade
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -1534,3 +1571,6 @@ INSERT INTO migrations VALUES(93,'2025_11_12_151901_create_rental_returns_table'
 INSERT INTO migrations VALUES(94,'2025_11_12_161141_create_bim_models_table',1);
 INSERT INTO migrations VALUES(95,'2025_11_12_161937_create_bim_object_metadata_table',1);
 INSERT INTO migrations VALUES(96,'2025_11_12_162450_create_bim_links_table',1);
+INSERT INTO migrations VALUES(97,'2025_11_12_223836_create_imports_table',1);
+INSERT INTO migrations VALUES(98,'2025_11_12_223837_create_exports_table',1);
+INSERT INTO migrations VALUES(99,'2025_11_12_223838_create_failed_import_rows_table',1);

@@ -1,9 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Tiers;
 
 use App\Models\Core\Bank;
-use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersBank;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

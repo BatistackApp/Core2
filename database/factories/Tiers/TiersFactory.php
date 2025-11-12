@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Tiers;
 
 use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;

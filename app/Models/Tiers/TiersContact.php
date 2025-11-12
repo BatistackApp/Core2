@@ -2,6 +2,7 @@
 
 namespace App\Models\Tiers;
 
+use App\Enums\Tiers\TiersCivility;
 use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TiersContact extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'civilite' => TiersCivility::class,
+    ];
 
     public $timestamps = false;
     protected $guarded = [];

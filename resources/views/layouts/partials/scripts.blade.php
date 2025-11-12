@@ -6,4 +6,6 @@
 
 <!-- Compiled App Scripts -->
 @vite(['resources/js/app.js'])
+@livewireScripts
+@filamentScripts
 <!-- End of Scripts -->

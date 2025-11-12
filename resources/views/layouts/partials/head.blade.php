@@ -1,4 +1,9 @@
 <title>{{ config('app.name'). ' - ' . ($title ?? config('app.name')) }}</title>
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
 <meta charset="utf-8" />
 <meta content="follow, index" name="robots" />
 <link href="{{ url(request()->path()) }}" rel="canonical" />
@@ -25,4 +30,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link href="{{ asset('assets/vendors/apexcharts/apexcharts.css') }}" rel="stylesheet" />
 @vite(['resources/css/app.css'])
+@livewireStyles
+@filamentStyles
 
