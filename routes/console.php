@@ -7,6 +7,11 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+// Articles
+Schedule::command(\App\Console\Commands\CheckStockAlertsCommand::class)
+    ->dailyAt('08:00')
+    ->description('Check stock alerts');
+
 
 // Note de Frais
 Schedule::command(\App\Console\Commands\SendExpenseReportRemindersCommand::class)

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Articles\ArticleOuvrage;
+use App\Models\Articles\ArticleStock;
 use App\Models\Flottes\VehicleTollLog;
 use App\Models\Flottes\VehicleUsageLog;
 use App\Models\GED\Document;
@@ -18,6 +20,8 @@ use App\Models\Signature\SignatureSigner;
 use App\Models\Tiers\Tiers;
 use App\Models\Tiers\TiersBank;
 use App\Models\Vision\BimModel;
+use App\Observer\Articles\ArticleOuvrageObserver;
+use App\Observer\Articles\ArticleStockObserver;
 use App\Observer\Flottes\VehicleTollLogObserver;
 use App\Observer\Flottes\VehicleUsageLogObserver;
 use App\Observer\GED\DocumentObserver;
@@ -52,6 +56,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Tiers::observe(TiersObserver::class);
         TiersBank::observe(TiersBankObserver::class);
+
+        ArticleOuvrage::observe(ArticleOuvrageObserver::class);
+        ArticleStock::observe(ArticleStockObserver::class);
 
         Expense::observe(ExpenseObserver::class);
         ExpenseReceipt::observe(ExpenseReceiptObserver::class);
