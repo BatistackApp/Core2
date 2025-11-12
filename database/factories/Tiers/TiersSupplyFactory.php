@@ -1,17 +1,16 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Tiers;
 
 use App\Models\Comptabilite\PlanComptable;
 use App\Models\Core\ConditionReglement;
 use App\Models\Core\ModeReglement;
-use App\Models\Tiers\Tiers;
-use App\Models\Tiers\TiersCustomer;
+use App\Models\Tiers\TiersSupply;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TiersCustomerFactory extends Factory
+class TiersSupplyFactory extends Factory
 {
-    protected $model = TiersCustomer::class;
+    protected $model = TiersSupply::class;
 
     public function definition(): array
     {
@@ -23,7 +22,7 @@ class TiersCustomerFactory extends Factory
             'mode_reglement_id' => ModeReglement::all()->random()->id,
 
             'code_comptable_general' => PlanComptable::all()->random()->id,
-            'code_comptable_client' => PlanComptable::all()->random()->id,
+            'code_comptable_fournisseur' => PlanComptable::all()->random()->id,
             'condition_reglement_id' => ConditionReglement::all()->random()->id,
         ];
     }
