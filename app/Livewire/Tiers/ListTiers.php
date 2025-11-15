@@ -301,6 +301,8 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->icon(Heroicon::Trash)
                     ->tooltip("Supprimer")
                     ->requiresConfirmation()
+                    ->modalHeading('Supprimer le Tiers ?')
+                    ->modalDescription("Êtes-vous sûr de vouloir supprimer ce Tiers ?")
                     ->using(function (?Model $record) {
                         $record->delete();
                     })
