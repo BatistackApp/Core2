@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Articles::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Tiers::class)->nullable()->constrained()->cascadeOnDelete()->comment('Prix spécifique pour ce client');
+            $table->string('type_price')->comment("Achat ou vente");
 
             $table->string('price_level_name')->nullable();
 
