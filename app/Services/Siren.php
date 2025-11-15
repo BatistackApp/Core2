@@ -19,16 +19,28 @@ class Siren
                 'X-INSEE-Api-Key-Integration' => config('services.siren_api.key'),
             ])
             ->get($url);
-  
+
 
         if($request->status() === 200) {
             if($type === 'info') {
-                return $request->json();
+                $info = $request->object();
+                $bodacc = $this->getBodaccInfo($siren);
+                return collect()->push([
+                    "information" => $info,
+                    "bodacc" => $bodacc ?? []
+                ])->toArray();
             } else {
                 return true;
             }
         }else {
             return false;
         }
+    }
+
+    public function getBodaccInfo(string $siren): array
+    {
+        return Http::withoutVerifying()
+            ->get('https://www.bodacc.fr/api/explore/v2.1/catalog/datasets/annonces-commerciales/records?where=registre:"'.$siren.'"&limit=20')
+            ->object()->results;
     }
 }

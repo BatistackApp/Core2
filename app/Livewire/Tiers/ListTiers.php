@@ -11,12 +11,12 @@ use App\Models\Core\ConditionReglement;
 use App\Models\Core\Country;
 use App\Models\Core\ModeReglement;
 use App\Models\Tiers\Tiers;
+use App\Trait\Tiers\TiersFormSchema;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -42,200 +42,7 @@ use Livewire\Component;
 #[Title('Liste des Tiers')]
 class ListTiers extends Component implements HasActions, HasSchemas, HasTable
 {
-    use InteractsWithActions, InteractsWithSchemas, InteractsWithTable;
-
-    public function getSchemaTiers(): array
-    {
-        return [
-            Step::make('Informations Générales')
-                ->columns(2)
-                ->schema([
-                    TextInput::make('name')
-                        ->label('Nom')
-                        ->required(),
-
-                    Select::make('nature')
-                        ->label('Nature')
-                        ->live()
-                        ->options(TiersNature::class)
-                        ->required(),
-
-                    Select::make('type')
-                        ->label('Type')
-                        ->options(TiersType::class)
-                        ->required(),
-
-                    TextInput::make('siren')
-                        ->label('Siren'),
-
-                    Toggle::make('tva')
-                        ->live()
-                        ->label("Dispose d'un numéro de TVA Intracommunautaire"),
-
-                    TextInput::make('num_tva')
-                        ->label("Numéro TVA Intracommunautaire")
-                        ->visible(fn (Get $get) => $get('tva')),
-                ]),
-
-            Step::make('address')
-                ->label("Adresses")
-                ->schema([
-                    Repeater::make('addresses')
-                        ->columns(2)
-                        ->schema([
-                            TextInput::make('address')
-                                ->label('Adresse Postal'),
-
-                            TextInput::make('code_postal')
-                                ->label('Code Postal'),
-
-                            TextInput::make('ville')
-                                ->label('Ville'),
-
-                            Select::make('pays')
-                                ->label('Pays')
-                                ->options(Country::all()->pluck('name', 'name'))
-                                ->searchable(),
-                        ])
-                ]),
-
-            Step::make('contact')
-                ->label("Contact")
-                ->description("Contact au sein du tiers")
-                ->schema([
-                    Repeater::make('contacts')
-                        ->columns(3)
-                        ->schema([
-                            Select::make('civilite')
-                                ->label("Civilité")
-                                ->options(TiersCivility::class)
-                                ->searchable(),
-
-                            TextInput::make('nom')
-                                ->label('Nom de famille'),
-
-                            TextInput::make('prenom')
-                                ->label('Prénom'),
-
-                            TextInput::make('poste')
-                                ->label('Poste')
-                                ->columns(1),
-
-                            TextInput::make('tel')
-                                ->label('Téléphone')
-                                ->mask('99 99 99 99 99'),
-
-                            TextInput::make('portable')
-                                ->label('Portable')
-                                ->mask('99 99 99 99 99'),
-
-                            TextInput::make('email')
-                                ->label('Adresse Mail'),
-                        ])
-                ]),
-
-            Step::make('fournisseur')
-                ->label('Fournisseur')
-                ->description("Information relative au fournisseur")
-                ->visible(fn (Get $get) => $get('nature') === TiersNature::Fournisseur)
-                ->columns(2)
-                ->schema([
-                    TextInput::make('rem_relative')
-                        ->label('Remise relative')
-                        ->helperText('Utiliser souvent en pourcentage (25%)'),
-
-                    TextInput::make('rem_fixe')
-                        ->label('Remise Fixe')
-                        ->helperText("Utiliser souvent en numéraire (10,00€)"),
-
-                    Select::make('code_comptable_general')
-                        ->label("Code Comptable Principal")
-                        ->options(PlanComptable::all()->mapWithKeys(function ($plan) {
-                            // La clé de l'array est la 'value' (le code)
-                            // La valeur de l'array est le 'label' (l'affichage)
-                            return [$plan->id => $plan->code . ' - ' . $plan->account];
-                        }))
-                        ->searchable(),
-
-                    Select::make('code_comptable_fournisseur')
-                        ->label("Code Comptable Fournisseur")
-                        ->options(
-                            PlanComptable::all()->mapWithKeys(function ($plan) {
-                                // La clé de l'array est la 'value' (le code)
-                                // La valeur de l'array est le 'label' (l'affichage)
-                                return [$plan->id => $plan->code . ' - ' . $plan->account];
-                            })
-                        )
-                        ->searchable(),
-
-                    Select::make('condition_reglement')
-                        ->label('Condition de règlement')
-                        ->options(ConditionReglement::pluck('name', 'id')),
-
-                    Select::make('mode_reglement')
-                        ->label('Mode de règlement')
-                        ->options(ModeReglement::pluck('name', 'id')),
-                ]),
-
-            Step::make('client')
-                ->label('Client')
-                ->description("Information relative au client")
-                ->visible(fn (Get $get) => $get('nature') === TiersNature::Client)
-                ->columns(2)
-                ->schema([
-                    TextInput::make('rem_relative')
-                        ->label('Remise relative')
-                        ->helperText('Utiliser souvent en pourcentage (25%)'),
-
-                    TextInput::make('rem_fixe')
-                        ->label('Remise Fixe')
-                        ->helperText("Utiliser souvent en numéraire (10,00€)"),
-
-                    Select::make('code_comptable_general')
-                        ->label("Code Comptable Principal")
-                        ->options(
-                            PlanComptable::all()->mapWithKeys(function ($plan) {
-                                // La clé de l'array est la 'value' (le code)
-                                // La valeur de l'array est le 'label' (l'affichage)
-                                return [$plan->id => $plan->code . ' - ' . $plan->account];
-                            })
-                        )
-                        ->searchable(),
-
-                    Select::make('code_comptable_client')
-                        ->label("Code Comptable Client")
-                        ->options(PlanComptable::all()->mapWithKeys(function ($plan) {
-                            // La clé de l'array est la 'value' (le code)
-                            // La valeur de l'array est le 'label' (l'affichage)
-                            return [$plan->id => $plan->code . ' - ' . $plan->account];
-                        }))
-                        ->searchable(),
-
-                    Select::make('condition_reglement')
-                        ->label('Condition de règlement')
-                        ->options(ConditionReglement::pluck('name', 'id')),
-
-                    Select::make('mode_reglement')
-                        ->label('Mode de règlement')
-                        ->options(ModeReglement::pluck('name', 'id')),
-                ]),
-
-            Step::make('bank')
-                ->label('Informations Bancaires')
-                ->description("Informations Bancaire du tiers")
-                ->columns(3)
-                ->schema([
-                    TextInput::make('iban')
-                        ->label('IBAN'),
-
-                    TextInput::make('bic')
-                        ->label('BIC/SWIFT'),
-
-                    Toggle::make('default')
-                        ->label('Compte par default'),
-                ])
-        ];
-    }
+    use InteractsWithActions, InteractsWithSchemas, InteractsWithTable, TiersFormSchema;
 
     public function table(Table $table): Table
     {
@@ -281,7 +88,7 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->label('Création de Tiers')
                     ->color('primary')
                     ->icon(Heroicon::Plus)
-                    ->steps($this->getSchemaTiers())
+                    ->steps($this->getTiersFormSchema())
                     ->using(function (array $data) {
                         $this->createTiers($data);
                     }),
@@ -293,7 +100,8 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                 Action::make('view')
                     ->iconButton()
                     ->icon(Heroicon::Eye)
-                    ->tooltip("Fiche"),
+                    ->tooltip("Fiche")
+                    ->url(fn (?Model $record) => route('tiers.show', $record)),
 
                 DeleteAction::make('delete')
                     ->button()
@@ -301,6 +109,8 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->icon(Heroicon::Trash)
                     ->tooltip("Supprimer")
                     ->requiresConfirmation()
+                    ->modalHeading('Supprimer le Tiers ?')
+                    ->modalDescription("Êtes-vous sûr de vouloir supprimer ce Tiers ?")
                     ->using(function (?Model $record) {
                         $record->delete();
                     })
