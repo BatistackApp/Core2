@@ -9,6 +9,7 @@
         "php": "^8.2",
         "creativeorange/gravatar": "^1.0",
         "filament/filament": "~4.0",
+        "intervention/validation": "^4.6",
         "laravel-lang/common": "^6.7",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",

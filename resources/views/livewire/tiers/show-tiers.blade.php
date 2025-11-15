@@ -56,7 +56,7 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white">Comptes Bancaires</h3>
                 </div>
                 <div class="border-t border-gray-200 dark:border-white/10">
-                    {{-- @livewire('tiers.relation-managers.tiers-banks', ['tiers' => $tiers]) --}}
+                    @livewire('tiers.panels.tiers-bank', ['tiers' => $tiers])
                 </div>
             </div>
 
