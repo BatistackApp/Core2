@@ -27,10 +27,10 @@
             @livewire("core.component.panel.panel-config-article-warehouse")
         </div>
         <div class="hidden" id="unit">
-            Componenent: Unit
+            @livewire("core.component.panel.panel-config-article-unit")
         </div>
         <div class="hidden" id="categories">
-            Componenent: Catégorie
+            @livewire("core.component.panel.panel-config-article-category")
         </div>
     </div>
 </div>
