@@ -15,17 +15,25 @@ class Bridge
 
     private string $client_secret;
 
+    private string $sector = 'bank'; // Bank ou Payment
+
     public function __construct()
     {
-        $this->client_id = config('services.bridge.client_id');
-        $this->client_secret = config('services.bridge.client_secret');
+        if($this->sector == 'bank') {
+            $this->client_id = config('services.bridge.client_id');
+            $this->client_secret = config('services.bridge.client_secret');
+        } else {
+            $this->client_id = config('services.bridge.payment_client_id');
+            $this->client_secret = config('services.bridge.payment_client_secret');
+        }
     }
 
     /**
      * @return array<string, mixed>|null
      */
-    public function get(string $folder, ?array $data = null, ?string $withToken = null): ?array
+    public function get(string $folder, ?array $data = null, ?string $withToken = null, ?string $sector = 'bank'): ?array
     {
+        $this->sector = $sector;
         try {
             if ($withToken !== null && $withToken !== '' && $withToken !== '0') {
                 /** @var array<string, mixed>|null $request */
@@ -64,8 +72,9 @@ class Bridge
     /**
      * @return array<string, mixed>|null
      */
-    public function post(string $folder, ?array $data = null, ?string $withToken = null): ?array
+    public function post(string $folder, ?array $data = null, ?string $withToken = null, ?string $sector = 'bank'): ?array
     {
+        $this->sector = $sector;
         try {
             if ($withToken !== null && $withToken !== '' && $withToken !== '0') {
                 /** @var array<string, mixed>|null $request */
@@ -104,8 +113,9 @@ class Bridge
     /**
      * @return array<string, mixed>|null
      */
-    public function delete(string $folder, ?array $data = null, ?string $withToken = null): ?array
+    public function delete(string $folder, ?array $data = null, ?string $withToken = null, ?string $sector = 'bank'): ?array
     {
+        $this->sector = $sector;
         try {
             if ($withToken !== null && $withToken !== '' && $withToken !== '0') {
                 /** @var array<string, mixed>|null $request */

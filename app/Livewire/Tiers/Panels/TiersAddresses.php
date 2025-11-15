@@ -99,7 +99,9 @@ class TiersAddresses extends Component implements HasTable, HasSchemas, HasActio
                         $data['ville'] = $record->ville;
                         $data['pays'] = $record->pays;
                         return $data;
-                    }),
+                    })
+                    ->using(fn (array $data) => $this->tiers->addresses()->updateOrCreate(['id' => $data['id']], $data)),
+
                 DeleteAction::make()
                     ->tooltip('Supprimer la adresse')
                     ->iconButton()

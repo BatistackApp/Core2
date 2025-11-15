@@ -41,6 +41,8 @@ return [
         'endpoint' => 'https://api.bridgeapi.io/v3/',
         'version' => '2025-01-15',
         'callback_url' => env('BRIDGE_CALLBACK_URL'),
+        'payment_client_id' => env("BRIDGE_PAYMENT_CLIENT_ID"),
+        'payment_client_secret' => env("BRIDGE_PAYMENT_CLIENT_SECRET")
     ],
 
     'siren_api' => [

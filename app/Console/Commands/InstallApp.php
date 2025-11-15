@@ -273,13 +273,13 @@ class InstallApp extends Command
         $bridge_client_id = null;
 
         $this->info('Installation des informations de la société');
+        $this->importBank();
 
         // Vérifier si l'option 'aggregation-bancaire' est présente
         if (isset($response['options']) && is_array($response['options'])) {
             foreach ($response['options'] as $option) {
                 if (isset($option['product']['slug']) && $option['product']['slug'] === 'aggregation-bancaire') {
                     $hasBankAggregation = true;
-                    $this->importBank();
                     break;
                 }
             }
@@ -311,40 +311,38 @@ class InstallApp extends Command
 
     private function importBank(): void
     {
-        if (Bank::query()->count() === 0) {
-            $bridge = new Bridge();
-            $this->info('Installation des banques française');
+        $bridge = new Bridge();
+        $this->info('Installation des banques française');
 
-            try {
-                $call = $bridge->get('/providers?limit=500&country_code=FR')['resources'];
-                $progress = $this->output->createProgressBar(count($call));
-                $progress->start();
+        try {
+            $call = $bridge->get('/providers?limit=500&country_code=FR')['resources'];
+            $progress = $this->output->createProgressBar(count($call));
+            $progress->start();
 
-                foreach ($call as $bank) {
-                    Bank::query()->updateOrCreate(["bridge_id" => $bank['id']],[
-                        'bridge_id' => $bank['id'],
-                        'name' => $bank['name'],
-                        'logo_bank' => $bank['images']['logo'],
-                        'status_aggregation' => $bank['health_status']['aggregation']['status'] ?? null,
-                        'status_payment' => $bank['health_status']['single_payment']['status'] ?? null,
-                    ]);
-                    $progress->advance();
-                }
+            foreach ($call as $bank) {
+                Bank::query()->updateOrCreate(["bridge_id" => $bank['id']],[
+                    'bridge_id' => $bank['id'],
+                    'name' => $bank['name'],
+                    'logo_bank' => $bank['images']['logo'],
+                    'status_aggregation' => $bank['health_status']['aggregation']['status'] ?? null,
+                    'status_payment' => $bank['health_status']['single_payment']['status'] ?? null,
+                ]);
+                $progress->advance();
+            }
 
-                $progress->finish();
-            } catch (Exception $exception) {
-                Log::error($exception);
-                $this->error("Erreur lors de l'importation des banques, Base primaire insérer");
-                if (app()->environment('local', 'testing')) {
-                    $this->info('Importation des banques en mode local ou de test, banque de test insérée');
-                    Bank::query()->create([
-                        'bridge_id' => 1,
-                        'name' => 'Banque de Test',
-                        'logo_bank' => 'https://bank.test',
-                        'status_aggregation' => 'healthy',
-                        'status_payment' => 'healthy',
-                    ]);
-                }
+            $progress->finish();
+        } catch (Exception $exception) {
+            Log::error($exception);
+            $this->error("Erreur lors de l'importation des banques, Base primaire insérer");
+            if (app()->environment('local', 'testing')) {
+                $this->info('Importation des banques en mode local ou de test, banque de test insérée');
+                Bank::query()->create([
+                    'bridge_id' => 1,
+                    'name' => 'Banque de Test',
+                    'logo_bank' => 'https://bank.test',
+                    'status_aggregation' => 'healthy',
+                    'status_payment' => 'healthy',
+                ]);
             }
         }
     }
