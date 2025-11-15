@@ -1,3 +1,43 @@
+# [1.1.0](https://github.com/BatistackApp/Core2/compare/v1.0.0...v1.1.0) (2025-11-15)
+
+
+### Bug Fixes
+
+* **css:** corriger la déclaration des propriétés CSS dans `app.css` ([ad72408](https://github.com/BatistackApp/Core2/commit/ad724081b041361ce8b4b15df2eed8653c4d74fc))
+* **dev, tiers:** Corrections pour Vite/Herd et module Tiers ([#59](https://github.com/BatistackApp/Core2/issues/59)) ([a3d6b0d](https://github.com/BatistackApp/Core2/commit/a3d6b0da50ae8408c81b43ada43421cd10396dca))
+* **dev:** Configure Vite pour Herd (SSL/HMR) et finalise l'UI Tiers ([cba59b3](https://github.com/BatistackApp/Core2/commit/cba59b39bb9c03f76b694c870aa520a2b693479c))
+* **tiers:** Corriger l'action de suppression d'un tiers ([ce06e40](https://github.com/BatistackApp/Core2/commit/ce06e40f5d1bbda2831da9980d12832cf05837e0))
+
+
+### Features
+
+* Ajout d'un modal de confirmation pour la suppression des Tiers ([d4177e5](https://github.com/BatistackApp/Core2/commit/d4177e55ddb59f6151a8e82ef89f04df6443fbbb))
+* Ajout du fichier de prompt pour l'Assistant IA PR ([3ffcb86](https://github.com/BatistackApp/Core2/commit/3ffcb8630c08f6878dc9e27a7b900518c43fe835))
+* **articles:** ajouter les modèles, migrations et factories pour la gestion des articles, stocks, ouvrages et catégories ([09ee540](https://github.com/BatistackApp/Core2/commit/09ee54098e8b0ed68854ca89c60dae5192a690d6))
+* **articles:** Implémente les alertes de stock et le calcul de coût des ouvrages ([d6e8ea3](https://github.com/BatistackApp/Core2/commit/d6e8ea3b5b3d4798ab619477b667246b33b280d2))
+* **banking:** implémentation complète de la gestion bancaire des tiers ([9e26d2c](https://github.com/BatistackApp/Core2/commit/9e26d2c9c203b5145e0a29720d67d28b1e62b832))
+* **banque:** ajouter les modèles, migrations, énumérations et factories pour la gestion bancaire ([b8336ea](https://github.com/BatistackApp/Core2/commit/b8336ea489fa888cf6c0155cc07d63f9286c3f87))
+* **chantiers:** ajouter le modèle et la factory pour la gestion des postes de chantiers ([ccb06ed](https://github.com/BatistackApp/Core2/commit/ccb06edc2bebc6d6cee59d1b1d9ac0b815fd9438))
+* **chantiers:** ajouter les modèles, énumérations, migrations et factories pour la gestion des chantiers ([d587b9b](https://github.com/BatistackApp/Core2/commit/d587b9b529c3bea76ef66723e236b05276da8b02))
+* **chantiers:** ajouter les modèles, énumérations, migrations et factories pour la gestion des chantiers ([#49](https://github.com/BatistackApp/Core2/issues/49)) ([a5d3d2b](https://github.com/BatistackApp/Core2/commit/a5d3d2ba4ef6e3d9e43fa95700b6420bfa74e8bf))
+* **commerces:** ajouter les modèles, énumérations, migrations et factories pour les commandes et devis ([611e65d](https://github.com/BatistackApp/Core2/commit/611e65ddccfd8bfbabfbe476b7461f90f4d40464))
+* **comptabilite:** ajouter les modèles, migrations et factories pour la gestion comptable ([3f4d701](https://github.com/BatistackApp/Core2/commit/3f4d70143cbcd945b6c0ac6a4f65bc7b7dd1f8ee))
+* **core:** ajouter les entités Units et Warehouses avec leurs migrations et factories ([c4a8062](https://github.com/BatistackApp/Core2/commit/c4a8062133cfd28f631d9ee54dfca7efd172d41f))
+* **facturation:** ajouter les modèles, énumérations, migrations et factories pour la gestion des factures ([1fd035a](https://github.com/BatistackApp/Core2/commit/1fd035afee6ee3798872c0bebc2ffd395b01a7e0))
+* **flottes:** ajouter les modèles, énumérations, migrations, observers, jobs et commandes pour la gestion des flottes ([aa085ba](https://github.com/BatistackApp/Core2/commit/aa085bae65ab69f0ddfe1622b038d43e63a81195))
+* **ged:** ajouter les modèles, migrations, observers, factories et énumérations pour la gestion des documents et collections GED ([bde0223](https://github.com/BatistackApp/Core2/commit/bde0223a159bdeef41990be0aba63e27cafa6ad2))
+* **gpao:** ajouter les modèles, observers, jobs, énumérations et commandes pour la gestion des ordres de fabrication ([8076ac1](https://github.com/BatistackApp/Core2/commit/8076ac1247888d00a9ef63ef0095fdbc64ac3794))
+* **grh:** ajouter les modèles, migrations, énumérations et factories pour la gestion RH ([a4d51d3](https://github.com/BatistackApp/Core2/commit/a4d51d387cd9840ca975ab3f1abcaf8cac9112d6))
+* Implémentation des principaux modules métier ([#58](https://github.com/BatistackApp/Core2/issues/58)) ([1799a5c](https://github.com/BatistackApp/Core2/commit/1799a5cdffa66ec365e5d18ce61d665a917102b6))
+* **locations:** Implémente la facturation auto et la gestion des disponibilités ([df0e0f0](https://github.com/BatistackApp/Core2/commit/df0e0f0252de9aa046f1a2ca076aa17d5a24b800))
+* **note-frais:** ajouter les modèles, observers, jobs, énumérations, factories et commandes pour la gestion des notes de frais ([58c77d7](https://github.com/BatistackApp/Core2/commit/58c77d7f47ad25f261ab4b468f9e1e3338c178bf))
+* **paie:** ajouter les modèles, migrations, énumérations et factories pour la gestion de la paie ([9a28b10](https://github.com/BatistackApp/Core2/commit/9a28b10afe7763d5e3300fc56722808bf7b4ec1c))
+* **planning:** ajouter les entités et configurations pour la gestion des plannings ([73fbf98](https://github.com/BatistackApp/Core2/commit/73fbf98d257f2cce2df95c641cdf6ab510591043))
+* **signature:** ajouter les modèles, énumérations, migrations, observers, jobs et notifications pour la gestion des signatures électroniques ([3aa18f9](https://github.com/BatistackApp/Core2/commit/3aa18f90ae497546b8e3af2f12ed33754a0672a8))
+* **tiers:** implémentation complète de la fiche détaillée et gestion des relations ([e72afc0](https://github.com/BatistackApp/Core2/commit/e72afc06d06fefdf57de82e0421d1a42449eadf8))
+* **tiers:** Implémente la logique métier via les Observers et finalise les modèles ([45f0d18](https://github.com/BatistackApp/Core2/commit/45f0d189e42097795fa2effcff44bea7d66b5f28))
+* **vision:** Implémente le traitement et l'extraction des maquettes BIM ([85b9f9b](https://github.com/BatistackApp/Core2/commit/85b9f9b6b6e3b35b31284032f4a10efaef5920b4))
+
 # 1.0.0 (2025-11-09)
 
 
