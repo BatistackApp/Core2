@@ -18,7 +18,7 @@ class CreateUser
         $company = Company::query()->first();
 
         // Création du compte si il n'existe pas
-        if (! $company->bridge_client_id) {
+        if (!isset($company->bridge_client_id)) {
             try {
                 $user_account = $this->bridge->post('aggregation/users', [
                     'external_user_id' => 'USER'.random_int(1, 50000),

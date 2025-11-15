@@ -275,6 +275,17 @@ class InstallApp extends Command
         $this->info('Installation des informations de la société');
         $this->importBank();
 
+        Company::query()->updateOrCreate(['id' => 1], [
+            'name' => $response['customer']['entreprise'],
+            'address' => $response['customer']['adresse'],
+            'code_postal' => $response['customer']['code_postal'],
+            'ville' => $response['customer']['ville'],
+            'pays' => $response['customer']['pays'],
+            'phone' => $response['customer']['tel'],
+            'email' => $response['customer']['user']['email'],
+            'bridge_client_id' => $bridge_client_id,
+        ]);
+
         // Vérifier si l'option 'aggregation-bancaire' est présente
         if (isset($response['options']) && is_array($response['options'])) {
             foreach ($response['options'] as $option) {
@@ -297,16 +308,7 @@ class InstallApp extends Command
             }
         }
 
-        Company::query()->updateOrCreate(['id' => 1], [
-            'name' => $response['customer']['entreprise'],
-            'address' => $response['customer']['adresse'],
-            'code_postal' => $response['customer']['code_postal'],
-            'ville' => $response['customer']['ville'],
-            'pays' => $response['customer']['pays'],
-            'phone' => $response['customer']['tel'],
-            'email' => $response['customer']['user']['email'],
-            'bridge_client_id' => $bridge_client_id,
-        ]);
+
     }
 
     private function importBank(): void
