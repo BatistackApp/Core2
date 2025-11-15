@@ -14,7 +14,7 @@ Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
 Route::get('test', function () {
-    dd(app(Batistack::class)->get('/license/info', ['license_key' => 'SRV-20251106-JPNXR']));
+    dd(app(\App\Services\Bridge::class)->get('/payment/payment-account/beneficiaries', sector: 'payment'));
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
             '3d-vision' => redirect()->route('3d-vision.index'),
             'flotte' => redirect()->route('flotte.index'),
             'notes-frais' => redirect()->route('notes-frais.index'),
+            'signature' => redirect()->route('signature.index'),
             default => redirect()->route('home'),
         };
     })->name('module.redirect');

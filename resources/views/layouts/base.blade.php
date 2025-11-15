@@ -2,7 +2,6 @@
 <html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('layouts.partials.head')
-        @livewireStyles
     </head>
     <body class="demo1 kt-sidebar-fixed kt-header-fixed flex h-full bg-background text-base text-foreground antialiased">
         <!-- Page -->
@@ -31,7 +30,5 @@
         <!-- End of Page -->
 
         @include('layouts.partials.scripts')
-
-        @livewireScripts
     </body>
 </html>

@@ -26,7 +26,7 @@ enum TiersNature: string
     public function color(): string
     {
         return match ($this) {
-            self::Fournisseur => 'destructive',
+            self::Fournisseur => 'danger',
             self::Client => 'success',
             default => 'mono',
         };

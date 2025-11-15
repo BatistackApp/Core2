@@ -20,7 +20,7 @@
         </button>
     </div>
     <div class="kt-sidebar-content flex shrink-0 grow py-5 pe-2" id="sidebar_content">
-        @if (request()->routeIs('home', 'config.*', 'profil', 'license'))
+        @if (request()->routeIs('home', 'config.*', 'profil', 'license', '*'))
         <div class="kt-scrollable-y-hover flex shrink-0 grow pe-1 ps-2 lg:pe-3 lg:ps-5" data-kt-scrollable="true"
             data-kt-scrollable-dependencies="#sidebar_header" data-kt-scrollable-height="auto"
             data-kt-scrollable-offset="0px" data-kt-scrollable-wrappers="#sidebar_content" id="sidebar_scrollable">
