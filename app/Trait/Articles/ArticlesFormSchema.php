@@ -110,4 +110,13 @@ trait ArticlesFormSchema
                 ->default(1),
         ];
     }
+
+    public function getStockFormSchema(): array
+    {
+        return [
+            Select::make('warehouse_id')
+                ->label('Entrepot')
+                ->required(),
+        ];
+    }
 }

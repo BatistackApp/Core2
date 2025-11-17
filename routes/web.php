@@ -14,7 +14,7 @@ Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
 Route::get('test', function () {
-    dd(app(\App\Services\Bridge::class)->get('/payment/payment-account/beneficiaries', sector: 'payment'));
+    dd(app(\App\Services\Bridge::class)->get('/providers'));
 });
 
 Route::middleware(['auth'])->group(function () {
