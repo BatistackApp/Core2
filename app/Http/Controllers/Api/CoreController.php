@@ -12,6 +12,19 @@ use Illuminate\Support\Facades\Storage;
 
 class CoreController extends Controller
 {
+    public function backup(Request $request)
+    {
+        Artisan::call('down');
+        $output = Artisan::call('backup:run', ['--only-db']);
+
+        if ($output === 0) {
+            Artisan::call('up');
+            return response()->json(true);
+        } else {
+            return response()->json(false, 500);
+        }
+    }
+
     public function backupRestore(Request $request)
     {
         Artisan::call('down');

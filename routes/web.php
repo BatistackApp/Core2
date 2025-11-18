@@ -19,6 +19,9 @@ Route::get('test', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', Home::class)->name('home');
+    Route::get('/auth/sso/login/{user}', [\App\Http\Controllers\Auth\SsoLoginController::class, 'login'])
+        ->name('sso.login')
+        ->middleware(['signed']);
 
     Route::get('/config', Config::class)->name('config.index');
 
