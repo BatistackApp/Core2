@@ -36,6 +36,7 @@
             @livewire("articles.panels.article-prices", ['article' => $article])
         </div>
         <div class="hidden" id="stock">
+            @livewire("articles.panels.article-stock", ["article" => $article])
         </div>
         <div class="hidden" id="ouvrage">
         </div>

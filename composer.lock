@@ -127,16 +127,16 @@
         },
         {
             "name": "bacon/bacon-qr-code",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Bacon/BaconQrCode.git",
-                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f"
+                "reference": "fe259c55425b8178f77fb6d1f84ba2473e21ed55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/f9cc1f52b5a463062251d666761178dbdb6b544f",
-                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f",
+                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/fe259c55425b8178f77fb6d1f84ba2473e21ed55",
+                "reference": "fe259c55425b8178f77fb6d1f84ba2473e21ed55",
                 "shasum": ""
             },
             "require": {
@@ -146,8 +146,9 @@
             },
             "require-dev": {
                 "phly/keep-a-changelog": "^2.12",
-                "phpunit/phpunit": "^10.5.11 || 11.0.4",
+                "phpunit/phpunit": "^10.5.11 || ^11.0.4",
                 "spatie/phpunit-snapshot-assertions": "^5.1.5",
+                "spatie/pixelmatch-php": "^1.2.0",
                 "squizlabs/php_codesniffer": "^3.9"
             },
             "suggest": {
@@ -175,9 +176,9 @@
             "homepage": "https://github.com/Bacon/BaconQrCode",
             "support": {
                 "issues": "https://github.com/Bacon/BaconQrCode/issues",
-                "source": "https://github.com/Bacon/BaconQrCode/tree/v3.0.1"
+                "source": "https://github.com/Bacon/BaconQrCode/tree/v3.0.2"
             },
-            "time": "2024-10-01T13:55:55+00:00"
+            "time": "2025-11-16T22:59:48+00:00"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -3443,16 +3444,16 @@
         },
         {
             "name": "laravel-lang/locale-list",
-            "version": "1.5.1",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/locale-list.git",
-                "reference": "060475db218a97a54612163112b44782024d79c1"
+                "reference": "98227230d737b32279f8376a3149be43965513c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/locale-list/zipball/060475db218a97a54612163112b44782024d79c1",
-                "reference": "060475db218a97a54612163112b44782024d79c1",
+                "url": "https://api.github.com/repos/Laravel-Lang/locale-list/zipball/98227230d737b32279f8376a3149be43965513c6",
+                "reference": "98227230d737b32279f8376a3149be43965513c6",
                 "shasum": ""
             },
             "require": {
@@ -3496,7 +3497,7 @@
                 "issues": "https://github.com/Laravel-Lang/locale-list/issues",
                 "source": "https://github.com/Laravel-Lang/locale-list"
             },
-            "time": "2025-06-23T09:39:26+00:00"
+            "time": "2025-11-16T18:22:05+00:00"
         },
         {
             "name": "laravel-lang/locales",
@@ -3657,16 +3658,16 @@
         },
         {
             "name": "laravel-lang/moonshine",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/moonshine.git",
-                "reference": "ede4d6554783d1cf98ff86fa39ad7aa05e9238fc"
+                "reference": "3ee6678d649983646831dc036fe2c0b510683e45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/moonshine/zipball/ede4d6554783d1cf98ff86fa39ad7aa05e9238fc",
-                "reference": "ede4d6554783d1cf98ff86fa39ad7aa05e9238fc",
+                "url": "https://api.github.com/repos/Laravel-Lang/moonshine/zipball/3ee6678d649983646831dc036fe2c0b510683e45",
+                "reference": "3ee6678d649983646831dc036fe2c0b510683e45",
                 "shasum": ""
             },
             "require": {
@@ -3719,9 +3720,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/moonshine/issues",
-                "source": "https://github.com/Laravel-Lang/moonshine/tree/1.6.0"
+                "source": "https://github.com/Laravel-Lang/moonshine/tree/1.7.0"
             },
-            "time": "2025-11-15T11:13:35+00:00"
+            "time": "2025-11-17T02:56:35+00:00"
         },
         {
             "name": "laravel-lang/native-country-names",
@@ -3866,16 +3867,16 @@
         },
         {
             "name": "laravel-lang/native-locale-names",
-            "version": "2.5.1",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/native-locale-names.git",
-                "reference": "38278ef43fb3460c9fb7a056ac2e8043e4faa963"
+                "reference": "6f5c0662287b61d078501eba9cdfff305a0d2266"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/native-locale-names/zipball/38278ef43fb3460c9fb7a056ac2e8043e4faa963",
-                "reference": "38278ef43fb3460c9fb7a056ac2e8043e4faa963",
+                "url": "https://api.github.com/repos/Laravel-Lang/native-locale-names/zipball/6f5c0662287b61d078501eba9cdfff305a0d2266",
+                "reference": "6f5c0662287b61d078501eba9cdfff305a0d2266",
                 "shasum": ""
             },
             "require": {
@@ -3928,7 +3929,7 @@
                 "issues": "https://github.com/Laravel-Lang/native-locale-names/issues",
                 "source": "https://github.com/Laravel-Lang/native-locale-names"
             },
-            "time": "2025-06-23T09:38:52+00:00"
+            "time": "2025-11-16T20:54:01+00:00"
         },
         {
             "name": "laravel-lang/publisher",
@@ -4108,16 +4109,16 @@
         },
         {
             "name": "laravel-lang/starter-kits",
-            "version": "1.5.1",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/starter-kits.git",
-                "reference": "553f9815e353177d530313b5e47b9cd348e069a9"
+                "reference": "0570716d62df4e718573bc9dfb3b621246629b40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/553f9815e353177d530313b5e47b9cd348e069a9",
-                "reference": "553f9815e353177d530313b5e47b9cd348e069a9",
+                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/0570716d62df4e718573bc9dfb3b621246629b40",
+                "reference": "0570716d62df4e718573bc9dfb3b621246629b40",
                 "shasum": ""
             },
             "require": {
@@ -4169,9 +4170,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/starter-kits/issues",
-                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.5.1"
+                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.6.0"
             },
-            "time": "2025-11-01T03:50:07+00:00"
+            "time": "2025-11-17T02:59:45+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -4789,16 +4790,16 @@
         },
         {
             "name": "laraveljutsu/zap",
-            "version": "v1.5.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ludoguenet/zap-for-laravel.git",
-                "reference": "fadeadaef4720e86d92fa2a4dcfd0e06cb225288"
+                "reference": "10237dc17caaba33bf7d0a18b1c7ba98a2cc64b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ludoguenet/zap-for-laravel/zipball/fadeadaef4720e86d92fa2a4dcfd0e06cb225288",
-                "reference": "fadeadaef4720e86d92fa2a4dcfd0e06cb225288",
+                "url": "https://api.github.com/repos/ludoguenet/zap-for-laravel/zipball/10237dc17caaba33bf7d0a18b1c7ba98a2cc64b8",
+                "reference": "10237dc17caaba33bf7d0a18b1c7ba98a2cc64b8",
                 "shasum": ""
             },
             "require": {
@@ -4807,8 +4808,8 @@
             "require-dev": {
                 "larastan/larastan": "^3.0",
                 "laravel/pint": "^1.20",
-                "orchestra/testbench": "^9.10",
-                "pestphp/pest": "^3.7"
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^4.0"
             },
             "type": "library",
             "extra": {
@@ -4847,9 +4848,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ludoguenet/zap-for-laravel/issues",
-                "source": "https://github.com/ludoguenet/zap-for-laravel/tree/v1.5.0"
+                "source": "https://github.com/ludoguenet/zap-for-laravel/tree/1.7.0"
             },
-            "time": "2025-10-28T20:35:37+00:00"
+            "time": "2025-11-15T22:35:39+00:00"
         },
         {
             "name": "league/commonmark",
