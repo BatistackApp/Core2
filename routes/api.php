@@ -13,6 +13,7 @@ Route::prefix('core')->group(function (): void {
     Route::get('/backup', [CoreController::class, 'backup']);
     Route::get('backup-restore', [CoreController::class, 'backupRestore']);
     Route::get('/storage/info', [CoreController::class, 'storageInfo']);
+    Route::get('/health', [CoreController::class, 'health']);
 });
 
 Route::prefix('users')->group(function (): void {
