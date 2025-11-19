@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 
 class CoreController extends Controller
 {
@@ -98,5 +99,14 @@ class CoreController extends Controller
             ],
             'timestamp' => now()->toIso8601String(),
         ], $dbStatus ? 200 : 500);
+    }
+
+    public function activityLog(Request $request)
+    {
+        $logs = Activity::with('causer')
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($logs);
     }
 }
