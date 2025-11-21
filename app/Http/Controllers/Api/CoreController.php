@@ -67,7 +67,7 @@ class CoreController extends Controller
 
     public function activityLog(Request $request)
     {
-        $logs = Activity::with('causer')->latest()->paginate(10);
+        $logs = Activity::with('causer')->get();
         return response()->json($logs);
     }
 }

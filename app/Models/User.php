@@ -11,12 +11,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Zap\Models\Concerns\HasSchedules;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasSchedules;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasSchedules, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -81,5 +83,11 @@ class User extends Authenticatable
     public function getIsAdminAttribute(): bool
     {
         return $this->role === UserRole::ADMINISTRATEUR;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }
