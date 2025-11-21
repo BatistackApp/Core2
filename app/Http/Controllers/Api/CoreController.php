@@ -85,20 +85,11 @@ class CoreController extends Controller
             $dbTime = 0;
         }
 
-        // 2. Vérification Espace Disque (sur le path de base)
-        $diskFree = disk_free_space(base_path());
-        $diskTotal = disk_total_space(base_path());
-        $diskUsedPercent = round(100 - (($diskFree / $diskTotal) * 100), 1);
-
         return response()->json([
             'status' => $dbStatus ? 'ok' : 'error', // Statut global
             'database' => [
                 'connected' => $dbStatus,
                 'latency' => $dbTime, // Latence en ms
-            ],
-            'storage' => [
-                'free_gb' => round($diskFree / 1024 / 1024 / 1024, 2),
-                'used_percent' => $diskUsedPercent,
             ],
             'system' => [
                 'php_version' => PHP_VERSION,
