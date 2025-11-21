@@ -28,9 +28,9 @@ class ArticleStock extends Model
         ];
     }
 
-    public function articles(): BelongsTo
+    public function article(): BelongsTo
     {
-        return $this->belongsTo(Articles::class);
+        return $this->belongsTo(Articles::class, 'articles_id');
     }
 
     public function warehouse(): BelongsTo
