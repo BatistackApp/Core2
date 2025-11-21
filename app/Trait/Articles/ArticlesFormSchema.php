@@ -65,7 +65,13 @@ trait ArticlesFormSchema
 
                     Toggle::make('is_stock_managed')
                         ->label("Gérer les stocks")
+                        ->live()
                         ->default(false),
+
+                    TextInput::make('stock_alert_threshold')
+                        ->label("Seuil d'alerte")
+                        ->default(0)
+                        ->visible(fn (Get $get) => $get('is_stock_managed')),
 
                     Textarea::make('description')
                         ->label('Description')

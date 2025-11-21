@@ -4,10 +4,13 @@ namespace App\Models\Articles;
 
 use App\Enums\Tiers\TiersType;
 use App\Models\Tiers\Tiers;
+use App\Observer\Articles\ArticlePriceObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy([ArticlePriceObserver::class])]
 class ArticlePrice extends Model
 {
     use HasFactory;

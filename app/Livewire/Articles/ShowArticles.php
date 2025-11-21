@@ -57,11 +57,24 @@ class ShowArticles extends Component implements HasActions, HasSchemas, HasTable
                         TextEntry::make('category.name')
                             ->label('Catégorie')
                             ->badge(),
+
                         TextEntry::make('unit.name')
                             ->label('Unité de mesure'),
+
                         TextEntry::make('vat_rate')
                             ->label('TVA')
                             ->suffix('%'),
+
+                        TextEntry::make('price_achat_ht')
+                            ->label("Prix d'achat HT")
+                            ->default(0)
+                            ->money('EUR'),
+
+                        TextEntry::make('prix_vente_ht')
+                            ->label("Prix de vente HT")
+                            ->default(0)
+                            ->money('EUR'),
+
                         TextEntry::make('description')
                             ->label('Description')
                             ->columnSpanFull()
