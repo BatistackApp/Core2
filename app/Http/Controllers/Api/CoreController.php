@@ -9,6 +9,7 @@ use App\Notifications\Core\BackupRestoreSuccessful;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 
 class CoreController extends Controller
 {
@@ -62,5 +63,11 @@ class CoreController extends Controller
         ]);
 
         return response()->json($license);
+    }
+
+    public function activityLog(Request $request)
+    {
+        $logs = Activity::with('causer')->latest()->paginate(10);
+        return response()->json($logs);
     }
 }
