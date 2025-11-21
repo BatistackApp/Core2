@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Core\Service;
 use App\Models\User;
 use App\Notifications\Core\BackupRestoreSuccessful;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -69,5 +70,42 @@ class CoreController extends Controller
     {
         $logs = Activity::with('causer')->get();
         return response()->json($logs);
+    }
+
+    public function health(Request $request)
+    {
+        // 1. Vérification Base de données
+        try {
+            $dbStart = microtime(true);
+            DB::connection()->getPdo();
+            $dbTime = round((microtime(true) - $dbStart) * 1000, 2); // en ms
+            $dbStatus = true;
+        } catch (\Exception $e) {
+            $dbStatus = false;
+            $dbTime = 0;
+        }
+
+        // 2. Vérification Espace Disque (sur le path de base)
+        $diskFree = disk_free_space(base_path());
+        $diskTotal = disk_total_space(base_path());
+        $diskUsedPercent = round(100 - (($diskFree / $diskTotal) * 100), 1);
+
+        return response()->json([
+            'status' => $dbStatus ? 'ok' : 'error', // Statut global
+            'database' => [
+                'connected' => $dbStatus,
+                'latency' => $dbTime, // Latence en ms
+            ],
+            'storage' => [
+                'free_gb' => round($diskFree / 1024 / 1024 / 1024, 2),
+                'used_percent' => $diskUsedPercent,
+            ],
+            'system' => [
+                'php_version' => PHP_VERSION,
+                'laravel_version' => app()->version(),
+                'debug_mode' => config('app.debug'),
+            ],
+            'timestamp' => now()->toIso8601String(),
+        ], $dbStatus ? 200 : 500);
     }
 }

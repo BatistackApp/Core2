@@ -14,6 +14,7 @@ Route::prefix('core')->group(function (): void {
     Route::get('backup-restore', [CoreController::class, 'backupRestore']);
     Route::get('/storage/info', [CoreController::class, 'storageInfo']);
     Route::get('/activity-log', [CoreController::class, 'activityLog']);
+    Route::get('/health', [CoreController::class, 'health']);
 });
 
 Route::prefix('users')->group(function (): void {
