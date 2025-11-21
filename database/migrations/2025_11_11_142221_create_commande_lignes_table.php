@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->decimal('amount_ht');
             $table->decimal('tva_rate');
             $table->foreignIdFor(Commande::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Articles\Articles::class)->nullable()->constrained()->onDelete('set null');
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models\Commerces;
 
 use App\Enums\Commerces\TypeDevisLigne;
+use App\Models\Articles\Articles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,12 @@ class CommandeLigne extends Model
     {
         return $this->belongsTo(Commande::class);
     }
+
+    public function article(): BelongsTo
+    {
+        return $this->belongsTo(Articles::class);
+    }
+
 
     protected $casts = [
         'type' => TypeDevisLigne::class,
