@@ -49,4 +49,8 @@ return [
         'key' => env('SIREN_API_KEY'),
     ],
 
+    'sso' => [
+        'secret' => 'secret_env'
+    ]
+
 ];

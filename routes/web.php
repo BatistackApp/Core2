@@ -13,12 +13,17 @@ Route::get('/login', Login::class)->name('login');
 Route::post('/logout', App\Livewire\Actions\Logout::class)
     ->name('logout');
 
+Route::get('/auth/sso/login/{user}', [\App\Http\Controllers\Auth\SsoLoginController::class, 'login'])
+    ->name('sso.login')
+    ->middleware(['signed', 'web']);
+
 Route::get('test', function () {
     dd(app(\App\Services\Bridge::class)->get('/providers'));
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', Home::class)->name('home');
+
 
     Route::get('/config', Config::class)->name('config.index');
 
