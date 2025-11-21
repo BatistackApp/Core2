@@ -3,6 +3,7 @@
 namespace App\Models\Articles;
 
 use App\Enums\Articles\ArticleType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ class Articles extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
+    protected $appends = ['stock_status'];
 
     public function unit(): BelongsTo
     {
@@ -71,5 +73,22 @@ class Articles extends Model
             'vat_rate' => 'decimal:2',
             'is_active' => 'boolean',
         ];
+    }
+
+    protected function stockStatus(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $actual_stock = $this->stocks()->sum('quantity') - $this->stocks()->sum('quantity_reserved');
+                $limit_quantity = $this->stock_alert_threshold;
+                if ($actual_stock <= 0) {
+                    return 'no_stock';
+                } elseif ($actual_stock <= $limit_quantity) {
+                    return 'stock_alert';
+                } else {
+                    return 'stock';
+                }
+            }
+        );
     }
 }

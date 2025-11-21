@@ -5,6 +5,7 @@ namespace App\Models\Articles;
 use App\Models\Core\Warehouse;
 use App\Observer\Articles\ArticleStockObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,4 +38,7 @@ class ArticleStock extends Model
     {
         return $this->belongsTo(Warehouse::class);
     }
+
+    // Attributes
+
 }
