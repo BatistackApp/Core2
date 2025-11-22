@@ -6,6 +6,7 @@ use App\Models\Articles\ArticleStock;
 use App\Models\Articles\Inventory;
 use DB;
 use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,7 +35,7 @@ class ValidateInventoryJob implements ShouldQueue
                 foreach ($lines as $line) {
                     $stock = ArticleStock::firstOrCreate(
                         [
-                            'articles_id' => $line->article_id,
+                            'articles_id' => $line->articles_id,
                             'warehouse_id' => $this->inventory->warehouse_id
                         ],
                         ['quantity' => 0, 'quantity_reserved' => 0]
@@ -55,7 +56,12 @@ class ValidateInventoryJob implements ShouldQueue
             Log::info("Inventaire {$this->inventory->code} validé avec succès.");
 
             // Optionnel : Envoyer une notification à l'utilisateur via Filament
-            Notification::make()->title('Inventaire validé')->sendToDatabase($this->inventory->user);
+            Notification::make()
+                ->success()
+                ->icon(Heroicon::Check)
+                ->title('Inventaire validé')
+                ->body("L'inventaire {$this->inventory->code} a été validé avec succès.")
+                ->sendToDatabase($this->inventory->user);
         });
     }
 }

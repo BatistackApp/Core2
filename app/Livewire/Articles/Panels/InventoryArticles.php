@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Articles\Panels;
 
+use App\Enums\Articles\InventoryStatus;
 use App\Models\Articles\Inventory;
 use App\Models\Articles\InventoryLine;
 use App\Trait\Articles\InventoryFormSchema;
@@ -49,6 +50,7 @@ class InventoryArticles extends Component implements HasSchemas, HasActions, Has
                 CreateAction::make('create')
                     ->icon(Heroicon::PlusCircle)
                     ->label("Ajouter un produit")
+                    ->visible(fn () => $this->inventory->status === InventoryStatus::DRAFT)
                     ->schema($this->getSchemaFormAddProductInventory())
                     ->mutateDataUsing(function (array $data) {
                         $data['inventory_id'] = $this->inventory->id;
