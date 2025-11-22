@@ -92,7 +92,7 @@ class ShowArticles extends Component implements HasActions, HasSchemas, HasTable
             EditAction::make('edit')
                 ->label('Modifier')
                 ->record($this->article)
-                ->form($this->getSchemaFormArticles()) // Réutilise le trait
+                ->schema($this->getSchemaFormArticles()) // Réutilise le trait
                 ->modalWidth('3xl')
                 ->modalHeading('Modifier l\'Article')
                 ->fillForm($this->article->toArray()) // Pré-remplit le formulaire
