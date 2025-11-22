@@ -4,9 +4,17 @@ namespace App\Observer\Articles;
 
 use App\Models\Articles\Inventory;
 use Illuminate\Validation\ValidationException;
+use Str;
 
 class InventoryObserver
 {
+    public function creating(Inventory $inventory): void
+    {
+        if (empty($inventory->code)) {
+            $inventory->code = 'INV-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4));
+            $inventory->user_id = auth()->id();
+        }
+    }
     public function updating(Inventory $inventory): void
     {
         // Si l'inventaire est déjà validé, on interdit toute modification
