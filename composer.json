@@ -13,6 +13,7 @@
         "creativeorange/gravatar": "^1.0",
         "filafly/filament-identity-column": "^1.0",
         "filament/filament": "~4.0",
+        "hugomyb/filament-media-action": "^4.1",
         "intervention/validation": "^4.6",
         "laravel-lang/common": "^6.7",
         "laravel/fortify": "^1.30",

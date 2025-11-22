@@ -23,6 +23,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Hugomyb\FilamentMediaAction\Actions\MediaAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -122,6 +123,15 @@ class ListInventory extends Component implements HasTable, HasSchemas, HasAction
                     ->modalHeading("Cette Inventaire va être supprimé.")
                     ->visible(fn (?Model $record) => $record->status !== 'validated')
                     ->action(fn (?Model $record) => $record->delete()),
+
+                MediaAction::make('pdf')
+                    ->iconButton()
+                    ->tooltip("Fiche Inventaire")
+                    ->icon(Heroicon::Printer)
+                    ->mediaType(MediaAction::TYPE_PDF)
+                    ->media(function (?Model $record) {
+                        return $record->getPdf();
+                    }),
             ]);
     }
 
