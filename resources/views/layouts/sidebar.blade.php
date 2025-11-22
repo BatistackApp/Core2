@@ -52,6 +52,14 @@
                         </span>
                         </a>
                     </div>
+                    <div class="kt-menu-item {{ request()->routeIs('articles.inventory.*') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('articles.inventory') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Inventaires
+                        </span>
+                        </a>
+                    </div>
                 @endif
                 <div class="kt-menu-item {{ request()->routeIs('config.*') ? 'active' : ''}}">
                     <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"

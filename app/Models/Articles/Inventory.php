@@ -2,6 +2,7 @@
 
 namespace App\Models\Articles;
 
+use App\Enums\Articles\InventoryStatus;
 use App\Jobs\Articles\ValidateInventoryJob;
 use App\Models\Core\Warehouse;
 use App\Models\User;
@@ -39,6 +40,7 @@ class Inventory extends Model
         return [
             'inventory_date' => 'date',
             'validated_at' => 'datetime',
+            'status' => InventoryStatus::class,
         ];
     }
 
