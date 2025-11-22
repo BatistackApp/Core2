@@ -48,6 +48,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ['initials'];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -83,6 +85,11 @@ class User extends Authenticatable
     public function getIsAdminAttribute(): bool
     {
         return $this->role === UserRole::ADMINISTRATEUR;
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        return $this->initials();
     }
 
     public function getActivitylogOptions(): LogOptions
