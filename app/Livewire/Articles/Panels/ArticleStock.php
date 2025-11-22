@@ -7,6 +7,7 @@ use App\Trait\Articles\ArticlesFormSchema;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Columns\TextColumn;
@@ -41,17 +42,15 @@ class ArticleStock extends Component implements HasActions, HasSchemas, HasTable
                 TextColumn::make('quantity_reserved')
                     ->label("Quantité Réservée"),
 
-                TextColumn::make('state')
+                TextColumn::make('article.stock_alert_threshold')
                     ->label('Status')
                     ->badge()
                     ->color(function (?Model $record) {
                         $limit_quantity = $record->article->stock_alert_threshold;
                         $color = 'mono';
-                        if ($record->quantity < $limit_quantity) {
-                            $color = 'destructive';
-                        } elseif($record->quantity === $limit_quantity) {
-                            $color = 'warning';
-                        } else {
+                        if ($record->quantity <= $limit_quantity) {
+                            $color = 'danger';
+                        }  else {
                             $color = 'success';
                         }
 
@@ -84,7 +83,13 @@ class ArticleStock extends Component implements HasActions, HasSchemas, HasTable
                     }),
             ])
             ->recordActions([
-
+                EditAction::make('edit')
+                    ->iconButton()
+                    ->tooltip("Editer le stock")
+                    ->schema($this->getStockFormSchema())
+                    ->using(function (array $data, ?Model $record) {
+                        $record->update($data);
+                    })
             ]);
     }
 

@@ -57,11 +57,24 @@ class ShowArticles extends Component implements HasActions, HasSchemas, HasTable
                         TextEntry::make('category.name')
                             ->label('Catégorie')
                             ->badge(),
+
                         TextEntry::make('unit.name')
                             ->label('Unité de mesure'),
+
                         TextEntry::make('vat_rate')
                             ->label('TVA')
                             ->suffix('%'),
+
+                        TextEntry::make('price_achat_ht')
+                            ->label("Prix d'achat HT")
+                            ->default(0)
+                            ->money('EUR'),
+
+                        TextEntry::make('prix_vente_ht')
+                            ->label("Prix de vente HT")
+                            ->default(0)
+                            ->money('EUR'),
+
                         TextEntry::make('description')
                             ->label('Description')
                             ->columnSpanFull()
@@ -79,7 +92,7 @@ class ShowArticles extends Component implements HasActions, HasSchemas, HasTable
             EditAction::make('edit')
                 ->label('Modifier')
                 ->record($this->article)
-                ->form($this->getSchemaFormArticles()) // Réutilise le trait
+                ->schema($this->getSchemaFormArticles()) // Réutilise le trait
                 ->modalWidth('3xl')
                 ->modalHeading('Modifier l\'Article')
                 ->fillForm($this->article->toArray()) // Pré-remplit le formulaire

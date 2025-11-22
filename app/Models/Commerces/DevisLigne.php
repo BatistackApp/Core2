@@ -3,6 +3,7 @@
 namespace App\Models\Commerces;
 
 use App\Enums\Commerces\TypeDevisLigne;
+use App\Models\Articles\Articles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,11 @@ class DevisLigne extends Model
     public function devis(): BelongsTo
     {
         return $this->belongsTo(Devis::class);
+    }
+
+    public function article(): BelongsTo
+    {
+        return $this->belongsTo(Articles::class);
     }
 
     protected $casts = [

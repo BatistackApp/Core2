@@ -4,6 +4,7 @@ namespace App\Trait\Articles;
 
 use App\Enums\Articles\ArticleType;
 use App\Models\Articles\Articles;
+use App\Models\Core\Warehouse;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -64,7 +65,13 @@ trait ArticlesFormSchema
 
                     Toggle::make('is_stock_managed')
                         ->label("Gérer les stocks")
+                        ->live()
                         ->default(false),
+
+                    TextInput::make('stock_alert_threshold')
+                        ->label("Seuil d'alerte")
+                        ->default(0)
+                        ->visible(fn (Get $get) => $get('is_stock_managed')),
 
                     Textarea::make('description')
                         ->label('Description')
@@ -116,6 +123,7 @@ trait ArticlesFormSchema
         return [
             Select::make('warehouse_id')
                 ->label('Entrepot')
+                ->options(Warehouse::all()->pluck('name', 'id'))
                 ->required(),
         ];
     }
