@@ -72,7 +72,19 @@ class ShowInventory extends Component implements HasSchemas, HasActions, HasTabl
 
                         TextEntry::make('status')
                             ->label("Nombre d'article")
+                            ->badge()
                             ->formatStateUsing(fn () => $this->inventory->lines()->count()),
+
+                        TextEntry::make('code')
+                            ->label("Valorisation de l'inventaire")
+                            ->badge()
+                            ->formatStateUsing(function () {
+                                $total = 0;
+                                foreach ($this->inventory->lines as $line) {
+                                    $total += $line->article->price_achat_ht * $line->real_quantity;
+                                }
+                                return \Number::currency($total, 'EUR', 'FR');
+                            }),
                     ]),
             ]);
     }

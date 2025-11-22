@@ -19,7 +19,8 @@
             <div class="lg:col-span-1">
                 {{ $this->inventoryInfoList }}
             </div>
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-3">
+                @livewire("articles.panels.inventory-articles", ['inventory' => $inventory])
             </div>
         </div>
     </div>
