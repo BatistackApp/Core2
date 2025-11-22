@@ -495,7 +495,7 @@ CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
 );
 CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
   "id" integer primary key autoincrement not null,
-  "date_intervention" date not null default '2025-11-22 21:25:02',
+  "date_intervention" date not null default '2025-11-22 22:13:39',
   "description" text not null,
   "temps" numeric,
   "facturable" tinyint(1) not null default '1',
