@@ -6,6 +6,7 @@ use App\Models\Articles\ArticleOuvrage;
 use App\Models\Articles\ArticlePrice;
 use App\Models\Articles\ArticleStock;
 use App\Models\Articles\Inventory;
+use App\Models\Commerces\Devis;
 use App\Models\Flottes\VehicleTollLog;
 use App\Models\Flottes\VehicleUsageLog;
 use App\Models\GED\Document;
@@ -26,6 +27,7 @@ use App\Observer\Articles\ArticleOuvrageObserver;
 use App\Observer\Articles\ArticlePriceObserver;
 use App\Observer\Articles\ArticleStockObserver;
 use App\Observer\Articles\InventoryObserver;
+use App\Observer\Commerces\DevisObserver;
 use App\Observer\Flottes\VehicleTollLogObserver;
 use App\Observer\Flottes\VehicleUsageLogObserver;
 use App\Observer\GED\DocumentObserver;
@@ -65,6 +67,8 @@ class AppServiceProvider extends ServiceProvider
         ArticleStock::observe(ArticleStockObserver::class);
         ArticlePrice::observe(ArticlePriceObserver::class);
         Inventory::observe(InventoryObserver::class);
+
+        Devis::observe(DevisObserver::class);
 
         Expense::observe(ExpenseObserver::class);
         ExpenseReceipt::observe(ExpenseReceiptObserver::class);
