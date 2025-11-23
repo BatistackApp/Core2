@@ -35,6 +35,50 @@
                         </span>
                     </a>
                 </div>
+                @if(request()->routeIs('articles.*'))
+                    <div class="kt-menu-item {{ request()->routeIs('articles.index', 'articles.show') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('articles.index') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Articles
+                        </span>
+                        </a>
+                    </div>
+                    <div class="kt-menu-item {{ request()->routeIs('articles.stock') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('articles.stock') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Stocks
+                        </span>
+                        </a>
+                    </div>
+                    <div class="kt-menu-item {{ request()->routeIs('articles.inventory.*') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('articles.inventory') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Inventaires
+                        </span>
+                        </a>
+                    </div>
+                @endif
+                @if(request()->routeIs('commerces.*'))
+                    <div class="kt-menu-item {{ request()->routeIs('commerces.devis.*') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('commerces.devis.liste') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Devis
+                        </span>
+                        </a>
+                    </div>
+                    <div class="kt-menu-item {{ request()->routeIs('commerces.commande.*') ? 'active' : ''}}">
+                        <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
+                           href="{{ route('commerces.commande.liste') }}" tabindex="0" wire:navigate>
+                        <span class="kt-menu-title text-sm font-medium text-foreground">
+                            Commandes
+                        </span>
+                        </a>
+                    </div>
+                @endif
                 <div class="kt-menu-item {{ request()->routeIs('config.*') ? 'active' : ''}}">
                     <a class="kt-menu-label gap-[10px] border border-transparent py-[6px] pe-[10px] ps-[10px]"
                         href="{{ route('config.index') }}" tabindex="0" wire:navigate>

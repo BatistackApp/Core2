@@ -1,3 +1,5 @@
+import '../../vendor/alperenersoy/filament-export/resources/js/filament-export.js';
+
 // Metronic Core JavaScript functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize drawer functionality

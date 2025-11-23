@@ -414,6 +414,7 @@ CREATE TABLE IF NOT EXISTS "article_prices"(
   "id" integer primary key autoincrement not null,
   "articles_id" integer not null,
   "tiers_id" integer,
+  "type_price" varchar not null,
   "price_level_name" varchar,
   "min_quantity" numeric not null,
   "price_ht" numeric not null,
@@ -494,7 +495,7 @@ CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
 );
 CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
   "id" integer primary key autoincrement not null,
-  "date_intervention" date not null default '2025-11-15 20:15:14',
+  "date_intervention" date not null default '2025-11-23 02:05:29',
   "description" text not null,
   "temps" numeric,
   "facturable" tinyint(1) not null default '1',
@@ -570,7 +571,9 @@ CREATE TABLE IF NOT EXISTS "devis_lignes"(
   "amount_ht" numeric not null,
   "tva_rate" numeric not null,
   "devis_id" integer not null,
-  foreign key("devis_id") references "devis"("id") on delete cascade
+  "articles_id" integer,
+  foreign key("devis_id") references "devis"("id") on delete cascade,
+  foreign key("articles_id") references "articles"("id") on delete set null
 );
 CREATE TABLE IF NOT EXISTS "commandes"(
   "id" integer primary key autoincrement not null,
@@ -594,7 +597,9 @@ CREATE TABLE IF NOT EXISTS "commande_lignes"(
   "amount_ht" numeric not null,
   "tva_rate" numeric not null,
   "commande_id" integer not null,
-  foreign key("commande_id") references "commandes"("id") on delete cascade
+  "articles_id" integer,
+  foreign key("commande_id") references "commandes"("id") on delete cascade,
+  foreign key("articles_id") references "articles"("id") on delete set null
 );
 CREATE TABLE IF NOT EXISTS "settings"(
   "id" integer primary key autoincrement not null,
@@ -1474,6 +1479,54 @@ CREATE TABLE IF NOT EXISTS "failed_import_rows"(
   "updated_at" datetime,
   foreign key("import_id") references "imports"("id") on delete cascade
 );
+CREATE TABLE IF NOT EXISTS "activity_log"(
+  "id" integer primary key autoincrement not null,
+  "log_name" varchar,
+  "description" text not null,
+  "subject_type" varchar,
+  "subject_id" integer,
+  "causer_type" varchar,
+  "causer_id" integer,
+  "properties" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "event" varchar,
+  "batch_uuid" varchar
+);
+CREATE INDEX "subject" on "activity_log"("subject_type", "subject_id");
+CREATE INDEX "causer" on "activity_log"("causer_type", "causer_id");
+CREATE INDEX "activity_log_log_name_index" on "activity_log"("log_name");
+CREATE TABLE IF NOT EXISTS "inventories"(
+  "id" integer primary key autoincrement not null,
+  "code" varchar not null,
+  "inventory_date" date not null,
+  "status" varchar not null,
+  "comment" text,
+  "validated_at" datetime,
+  "warehouse_id" integer not null,
+  "user_id" integer,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("warehouse_id") references "warehouses"("id") on delete cascade,
+  foreign key("user_id") references "users"("id") on delete set null
+);
+CREATE UNIQUE INDEX "inventories_code_unique" on "inventories"("code");
+CREATE TABLE IF NOT EXISTS "inventory_lines"(
+  "id" integer primary key autoincrement not null,
+  "expected_quantity" numeric not null default '0',
+  "real_quantity" numeric not null default '0',
+  "location" varchar,
+  "inventory_id" integer not null,
+  "articles_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("inventory_id") references "inventories"("id") on delete cascade,
+  foreign key("articles_id") references "articles"("id") on delete cascade
+);
+CREATE UNIQUE INDEX "inventory_lines_inventory_id_articles_id_unique" on "inventory_lines"(
+  "inventory_id",
+  "articles_id"
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -1574,3 +1627,8 @@ INSERT INTO migrations VALUES(96,'2025_11_12_162450_create_bim_links_table',1);
 INSERT INTO migrations VALUES(97,'2025_11_12_223836_create_imports_table',1);
 INSERT INTO migrations VALUES(98,'2025_11_12_223837_create_exports_table',1);
 INSERT INTO migrations VALUES(99,'2025_11_12_223838_create_failed_import_rows_table',1);
+INSERT INTO migrations VALUES(100,'2025_11_21_144938_create_activity_log_table',1);
+INSERT INTO migrations VALUES(101,'2025_11_21_144939_add_event_column_to_activity_log_table',1);
+INSERT INTO migrations VALUES(102,'2025_11_21_144940_add_batch_uuid_column_to_activity_log_table',1);
+INSERT INTO migrations VALUES(103,'2025_11_21_215659_create_inventories_table',1);
+INSERT INTO migrations VALUES(104,'2025_11_21_215942_create_inventory_lines_table',1);

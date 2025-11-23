@@ -17,14 +17,17 @@ class UserController extends Controller
 {
     public function list(Request $request): string
     {
-        $users = User::all();
-
-        return $users->toJson();
+        try {
+            $users = User::all();
+            return $users->toJson();
+        }catch (Exception $e){
+            \Log::emergency($e->getMessage(), ['exception' => $e]);
+            return response()->json(['message' => "Impossible de récupérer les utilisateurs"], 500);
+        }
     }
 
     public function create(Request $request): string
     {
-        // CORRECTION: Ajout de la règle d'énumération pour valider le rôle
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -67,7 +70,6 @@ class UserController extends Controller
             }
         } else {
             try {
-                // CORRECTION: Ajout de la règle d'énumération pour valider le rôle
                 $validated = $request->validate([
                     'name' => 'required|string|max:255',
                     'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,

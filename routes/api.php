@@ -5,9 +5,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CoreController;
 use App\Http\Controllers\Api\UserController;
 
+Route::prefix('auth')->group(function () {
+    Route::post('sso-link', [\App\Http\Controllers\Api\Auth\SsoController::class, 'createLink']);
+});
+
 Route::prefix('core')->group(function (): void {
+    Route::get('/backup', [CoreController::class, 'backup']);
     Route::get('backup-restore', [CoreController::class, 'backupRestore']);
     Route::get('/storage/info', [CoreController::class, 'storageInfo']);
+    Route::get('/activity-log', [CoreController::class, 'activityLog']);
+    Route::get('/health', [CoreController::class, 'health']);
 });
 
 Route::prefix('users')->group(function (): void {
