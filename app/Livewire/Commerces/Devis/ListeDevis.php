@@ -2,11 +2,17 @@
 
 namespace App\Livewire\Commerces\Devis;
 
+use App\Enums\Commerces\StatusDevis;
 use App\Models\Commerces\Devis;
+use App\Models\Core\Option;
 use App\Trait\Commerces\DevisForm;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
+use Filament\QueryBuilder\Constraints\DateConstraint;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Enums\Width;
@@ -15,7 +21,10 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -73,9 +82,61 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
                     ->schema($this->getSchemaDevis())
                     ->using(fn (array $data) => $this->submitDevis($data)),
             ])
-            ->toolbarActions([])
-            ->recordActions([])
-            ->filters([]);
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('generate_pdf')
+                        ->label('Générer le PDF')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('fusion_pdf')
+                        ->label('Fusionner les PDF')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('send')
+                        ->label('Envoyer par email')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('signed')
+                        ->label('Demander la signature')
+                        ->visible(Option::where('slug', 'pack-signature')->exists())
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('validate')
+                        ->label('Valider')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('signe')
+                        ->label('Signer')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('refused')
+                        ->label('Refuser')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('transform')
+                        ->label('Transformer')
+                        ->action(fn (Collection $records) => null),
+
+                    BulkAction::make('delete')
+                        ->label('Supprimer')
+                        ->action(fn (Collection $records) => null),
+                ])
+            ])
+            ->recordActions([
+                ActionGroup::make([
+
+                ]),
+            ])
+            ->filters([
+                QueryBuilder::make()
+                    ->constraints([
+                        DateConstraint::make('date_devis')
+                    ]),
+
+                SelectFilter::make('status')
+                    ->label('Statut')
+                    ->options(StatusDevis::class),
+            ]);
     }
     public function render()
     {

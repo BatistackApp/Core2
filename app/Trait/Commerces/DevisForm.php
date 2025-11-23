@@ -4,6 +4,7 @@ namespace App\Trait\Commerces;
 
 use App\Models\Articles\Articles;
 use App\Models\Chantiers\Chantiers;
+use App\Models\Commerces\Devis;
 use App\Models\Tiers\Tiers;
 use App\Trait\Tiers\TiersFormSchema;
 use Filament\Forms\Components\DatePicker;
@@ -85,6 +86,11 @@ trait DevisForm
     }
 
     public function submitDevis(array $data)
+    {
+
+    }
+
+    public function generatePdf(Devis $devis)
     {
 
     }
