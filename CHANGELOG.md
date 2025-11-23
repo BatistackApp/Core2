@@ -1,3 +1,45 @@
+# [1.2.0](https://github.com/BatistackApp/Core2/compare/v1.1.0...v1.2.0) (2025-11-23)
+
+
+### Bug Fixes
+
+* Remplacer 'form' par 'schema' dans EditAction pour l'action d'édition d'article ([323b814](https://github.com/BatistackApp/Core2/commit/323b8146cef88e33c7ffb54305ea25d97e73d595))
+
+
+### Features
+
+* **activite:** Ajout de la fonctionnalité de journalisation d'activité ([5951fd9](https://github.com/BatistackApp/Core2/commit/5951fd99ba1088849cf6e1242df98dfe30632cee))
+* **activity-log:** Ajout de l'API pour le journal d'activités ([#25](https://github.com/BatistackApp/Core2/issues/25)) ([8bbed21](https://github.com/BatistackApp/Core2/commit/8bbed212854efe64899c8a2f966fdac9af2a60b2))
+* Ajout API pour le journal d'activités ([0d0dca1](https://github.com/BatistackApp/Core2/commit/0d0dca14e8624d4397a5530c1942d956add525b2)), closes [#25](https://github.com/BatistackApp/Core2/issues/25)
+* Ajout d'une colonne identité avec initiales pour les utilisateurs ([84e51a6](https://github.com/BatistackApp/Core2/commit/84e51a65d2f8b495491c904ee5ff674749c5a7ed))
+* Ajout d'une interface d'inventaire pour les articles ([b18de42](https://github.com/BatistackApp/Core2/commit/b18de42aaedbd2a5a881f2d7a26af07c573b7664))
+* Ajout de l'observateur DevisObserver et de la relation lines pour les devis ([28a2688](https://github.com/BatistackApp/Core2/commit/28a2688468bb8604dad3cae510edbf2d32be7353))
+* Ajout de l'observation du modèle Devis par l'observer DevisObserver ([2a41ddc](https://github.com/BatistackApp/Core2/commit/2a41ddc8fda240813d5cece076d39598fd3561d1))
+* Ajout de la gestion des inventaires (develop) ([defa3f3](https://github.com/BatistackApp/Core2/commit/defa3f36415f904d2e5525b0f6deb9f0d0d1d74f))
+* Ajout de la gestion des prix des articles ([22e1c66](https://github.com/BatistackApp/Core2/commit/22e1c66540a72e33dc90502ca1b6fb703e83a90f))
+* Ajout de la page de liste des devis avec table Filament ([8c2f112](https://github.com/BatistackApp/Core2/commit/8c2f112101767829e8d48ed520558a0c0a6e946f))
+* Ajout des actions bulk et des filtres pour la gestion des devis ([384b6be](https://github.com/BatistackApp/Core2/commit/384b6be6796a3e8bf57471cac0d138c8b9ede5fb))
+* Ajout des actions et du filtre sur l'inventaire ([2cd9fa9](https://github.com/BatistackApp/Core2/commit/2cd9fa922db37de0516e00e3e658e4a95aad1dce))
+* ajout des traits pour les formulaires de commerce (commande et devis) ([cc859b6](https://github.com/BatistackApp/Core2/commit/cc859b6a8d13b5cad5376dee026f2847303dca03))
+* Ajout des widgets de devis et commandes en brouillon, avec graphiques ([52ab31d](https://github.com/BatistackApp/Core2/commit/52ab31dc8fc45120c4006f2cffb110161af4b30a))
+* Ajout du module commerces avec sous-modules devis et commandes ([dd4500d](https://github.com/BatistackApp/Core2/commit/dd4500dd3341ac7dd905df8ae410fc1291c1f3a3))
+* Ajout du système d'inventaire ([e31869c](https://github.com/BatistackApp/Core2/commit/e31869cd3e2643e5219f25a16384fcb1c55c1b70))
+* Amélioration de la notification de validation d'inventaire et ajustement de l'action de création ([3e690d3](https://github.com/BatistackApp/Core2/commit/3e690d33889eae8a5af34abbdd20867b3a4eee74))
+* **articles:** Ajout de la gestion des stocks avec tableau, filtres et calculs de seuils ([796756c](https://github.com/BatistackApp/Core2/commit/796756cd127fb99e4f338325b3822d4d5b31c3a1))
+* **Articles:** Ajout de la méthode creating dans InventoryObserver pour la génération automatique du code et de l'utilisateur ([1acaedb](https://github.com/BatistackApp/Core2/commit/1acaedb9f900909db0867167c4c92cf57753628f))
+* **Articles:** Ajout de relations avec les commandes et devis, implémentation du calcul de stock ([8230611](https://github.com/BatistackApp/Core2/commit/8230611c905888227425b586b9b58ab6d3178073))
+* **articles:** ajoute un panneau de gestion des stocks ([6c5b8ad](https://github.com/BatistackApp/Core2/commit/6c5b8adb7182af7a9ebd6f68fc19a97015b42a21))
+* **articles:** implement complete articles module with price management and configuration panels ([#65](https://github.com/BatistackApp/Core2/issues/65)) ([9da6411](https://github.com/BatistackApp/Core2/commit/9da6411c8e05de8b03b70a7bf482fa619f2179f8))
+* **articles:** Permet l'édition du stock et corrige l'affichage ([c2c1736](https://github.com/BatistackApp/Core2/commit/c2c17362368b35f002f4c2697421da7a94538d5f))
+* **auth:** Ajoute la connexion par SSO ([1c8dc81](https://github.com/BatistackApp/Core2/commit/1c8dc812a35be8141a6c3e6b81f03153af1ce81b)), closes [#19](https://github.com/BatistackApp/Core2/issues/19)
+* **auth:** ajoute la connexion SSO et un endpoint de backup ([8c3c01d](https://github.com/BatistackApp/Core2/commit/8c3c01da7719ce00f21d9c779a39d439a4b96fde))
+* **commerce:** Ajout des widgets de table et de graphique pour le commerce ([8777ed4](https://github.com/BatistackApp/Core2/commit/8777ed45f5da5f946e3bdaa9b558f51c60d947ee))
+* **config:** add category and unit management panels for articles configuration ([2479033](https://github.com/BatistackApp/Core2/commit/247903334b473ef9c52dfac425c06dd1ad49750f))
+* **config:** Intégration du module filament-export pour la gestion des catégories et unités ([0097f76](https://github.com/BatistackApp/Core2/commit/0097f765274f28f7d5bbc6ff980dcfa864ad7df3))
+* **core:** Ajout d'un point d'accès de bilan de santé ([c85f2f9](https://github.com/BatistackApp/Core2/commit/c85f2f9d0d2fc32173e9527a83082aed7bbbbb1b))
+* **inventory:** ajout de la génération de PDF pour les inventaires ([19da441](https://github.com/BatistackApp/Core2/commit/19da4412bd397c1d6a8d1b888393355fa5fb72c5))
+* **sante:** Ajout du point d'accès de vérification de santé ([17467be](https://github.com/BatistackApp/Core2/commit/17467bea79685232f7d6605a96e82c0523fcc88d))
+
 # [1.1.0](https://github.com/BatistackApp/Core2/compare/v1.0.0...v1.1.0) (2025-11-15)
 
 
