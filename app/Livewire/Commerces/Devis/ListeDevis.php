@@ -6,6 +6,7 @@ use App\Enums\Commerces\StatusDevis;
 use App\Models\Commerces\Devis;
 use App\Models\Core\Option;
 use App\Trait\Commerces\DevisForm;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -60,6 +61,11 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
                     ->label('Date du devis')
                     ->date('d/m/Y')
                     ->sortable(),
+
+                TextColumn::make('amount_ht')
+                    ->label("Montant HT")
+                    ->money('EUR')
+                    ->summarize(Sum::make('amount_ht')->money('EUR')),
 
                 TextColumn::make('amount_ttc')
                     ->label("Montant TTC")
@@ -119,12 +125,20 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
 
                     BulkAction::make('delete')
                         ->label('Supprimer')
+                        ->color('danger')
                         ->action(fn (Collection $records) => null),
                 ])
             ])
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('view')
+                        ->label("Voir le devis")
+                        ->icon(Heroicon::Eye)
+                        ->url(fn (?Model $record) => route('commerces.devis.show', $record)),
 
+                    Action::make('edit')
+                        ->label("Editer le devis")
+                        ->icon(Heroicon::Pencil),
                 ]),
             ])
             ->filters([

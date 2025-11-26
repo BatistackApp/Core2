@@ -4,6 +4,7 @@
             <button class="kt-tab-toggle active" data-kt-tab-toggle="#entreprise">Mon Entreprise</button>
             <button class="kt-tab-toggle" data-kt-tab-toggle="#modules">Mes Modules</button>
             <button class="kt-tab-toggle" data-kt-tab-toggle="#config-article">Articles (Configuration)</button>
+            <button class="kt-tab-toggle" data-kt-tab-toggle="#config-commerces">Commerces (Configuration)</button>
         </div>
         <div class="text-sm">
             <div id="entreprise" class="">
@@ -14,6 +15,9 @@
             </div>
             <div id="config-article" class="hidden">
                 @livewire('core.component.panel.panel-config-article')
+            </div>
+            <div id="config-commerces" class="hidden">
+                @livewire('core.component.panel.panel-config-commerce')
             </div>
         </div>
     </div>
