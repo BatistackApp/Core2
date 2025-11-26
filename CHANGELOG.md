@@ -1,3 +1,14 @@
+# [1.3.0](https://github.com/BatistackApp/Core2/compare/v1.2.0...v1.3.0) (2025-11-26)
+
+
+### Features
+
+* ajout du schéma de formulaire pour le Plan Comptable et ([fb2c727](https://github.com/BatistackApp/Core2/commit/fb2c72774e74aa28f2e219e6ba91b1ece7a59c5f))
+* **devis:** ajout de la gestion des types de ligne et calculs associés ([ef56dfe](https://github.com/BatistackApp/Core2/commit/ef56dfef5508b352986390f1ecb64ca34a02814d))
+* **devis:** ajout de la gestion des types de ligne et calculs associés ([aaefc76](https://github.com/BatistackApp/Core2/commit/aaefc7616dd3af49a530a80fd95e51aec1a63191))
+* **panel:** ajout de la configuration des commerces et des devis ([a481ccb](https://github.com/BatistackApp/Core2/commit/a481ccbbca0d7122cfcc1ee49d897f733bea7553))
+* **panel:** ajout de la configuration des commerces et des devis (develop) ([225f152](https://github.com/BatistackApp/Core2/commit/225f1520227ce9f615ccf8da17c3a41a51e6d8ca))
+
 # [1.2.0](https://github.com/BatistackApp/Core2/compare/v1.1.0...v1.2.0) (2025-11-23)
 
 
