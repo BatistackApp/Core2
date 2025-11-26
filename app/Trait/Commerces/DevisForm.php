@@ -13,6 +13,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 
 trait DevisForm
 {
@@ -50,8 +52,26 @@ trait DevisForm
         return [
             Select::make('articles_id')
                 ->label('Article')
+                ->live()
                 ->searchable()
-                ->options(Articles::pluck('name', 'id')),
+                ->options(Articles::pluck('name', 'id'))
+                ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                    if (!$state) {
+                        return;
+                    }
+                    $tiers = Tiers::find($get('tiers_id'));
+                    $article = Articles::find($state);
+                    if($article) {
+                        $set('libelle', $article->name);
+                        $set('qte', 1);
+                    }
+
+                    if($tiers) {
+                        $puht = $tiers->nature->value === 'client' ? $article->prix_vente_ht : $article->price_achat_ht;
+                        $set('puht', $puht);
+                        $set('amount_ht', ($puht * $get('qte')) * ($get('tva_rate') / 100));
+                    }
+                }),
 
             Grid::make(5)
                 ->schema([
@@ -87,7 +107,7 @@ trait DevisForm
 
     public function submitDevis(array $data)
     {
-
+        dd($data);
     }
 
     public function generatePdf(Devis $devis)

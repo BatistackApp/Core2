@@ -48,6 +48,7 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
     {
         return $table
             ->query(Tiers::query())
+            ->emptyStateHeading("Aucun Client/Fournisseur disponible dans cette table")
             ->columns([
                 TextColumn::make('name')
                     ->label('Nom')
@@ -129,14 +130,6 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                 'num_tva' => $data['num_tva'] ?? null,
             ]);
 
-            foreach ($data['addresses'] as $address) {
-                $tiers->addresses()->create($address);
-            }
-
-            foreach ($data['contacts'] as $contact) {
-                $tiers->contacts()->create($contact);
-            }
-
             if ($data['nature'] === TiersNature::Fournisseur) {
                 $tiers->supplyProfile()->create([
                     'tva' => $data['tva'],
@@ -178,7 +171,7 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                 ->send();
 
         } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
+            \Log::emergency($exception->getMessage());
             Notification::make()
                 ->danger()
                 ->title("Erreur lors de la création du Tiers")
