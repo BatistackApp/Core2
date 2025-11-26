@@ -13,6 +13,5 @@ class DevisObserver
         $devis->amount_ht = 0;
         $devis->amount_ttc = 0;
         $devis->responsable_id = auth()->id();
-        $devis->save();
     }
 }

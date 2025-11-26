@@ -61,6 +61,11 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
                     ->date('d/m/Y')
                     ->sortable(),
 
+                TextColumn::make('amount_ht')
+                    ->label("Montant HT")
+                    ->money('EUR')
+                    ->summarize(Sum::make('amount_ht')->money('EUR')),
+
                 TextColumn::make('amount_ttc')
                     ->label("Montant TTC")
                     ->money('EUR')
