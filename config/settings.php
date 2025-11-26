@@ -8,6 +8,7 @@ return [
      */
     'settings' => [
         \App\Settings\FacturationSettings::class,
+        \App\Settings\CommercesSettings::class,
     ],
 
     /*

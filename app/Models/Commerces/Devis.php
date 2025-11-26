@@ -41,6 +41,11 @@ class Devis extends Model
         return $this->hasMany(DevisLigne::class);
     }
 
+    public function getTotalVatAttribute(): float|int
+    {
+        return $this->amount_ht * 20 / 100;
+    }
+
     protected function casts(): array
     {
         return [

@@ -495,7 +495,7 @@ CREATE TABLE IF NOT EXISTS "chantiers_depenses"(
 );
 CREATE TABLE IF NOT EXISTS "chantiers_interventions"(
   "id" integer primary key autoincrement not null,
-  "date_intervention" date not null default '2025-11-23 02:05:29',
+  "date_intervention" date not null default '2025-11-26 17:28:04',
   "description" text not null,
   "temps" numeric,
   "facturable" tinyint(1) not null default '1',
@@ -1632,3 +1632,4 @@ INSERT INTO migrations VALUES(101,'2025_11_21_144939_add_event_column_to_activit
 INSERT INTO migrations VALUES(102,'2025_11_21_144940_add_batch_uuid_column_to_activity_log_table',1);
 INSERT INTO migrations VALUES(103,'2025_11_21_215659_create_inventories_table',1);
 INSERT INTO migrations VALUES(104,'2025_11_21_215942_create_inventory_lines_table',1);
+INSERT INTO migrations VALUES(105,'2025_11_26_161835_create_commerces_settings',1);
