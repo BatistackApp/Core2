@@ -33,6 +33,7 @@ class DevisDraft extends TableWidget
                 TextColumn::make('amount_ttc')
                     ->label('')
                     ->numeric()
+                    ->money('EUR')
                     ->summarize(Sum::make()->money('EUR'))
             ]);
     }
