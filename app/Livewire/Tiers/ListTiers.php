@@ -65,9 +65,11 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->badge(),
                 TextColumn::make('contacts.email')
                     ->label('Email')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 TextColumn::make('contacts.phone')
                     ->label('Téléphone')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Créé le')
@@ -91,7 +93,7 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->icon(Heroicon::Plus)
                     ->steps($this->getTiersFormSchema())
                     ->using(function (array $data) {
-                        $this->createTiers($data);
+                        $this->submitForm($data);
                     }),
 
                 ExportAction::make('export')
@@ -116,67 +118,6 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                         $record->delete();
                     })
             ]);
-    }
-
-    public function createTiers(array $data): void
-    {
-        try {
-            $tiers = Tiers::create([
-                'name' => $data['name'],
-                'nature' => $data['nature'],
-                'type' => $data['type'],
-                'siren' => $data['siren'],
-                'tva' => $data['tva'],
-                'num_tva' => $data['num_tva'] ?? null,
-            ]);
-
-            if ($data['nature'] === TiersNature::Fournisseur) {
-                $tiers->supplyProfile()->create([
-                    'tva' => $data['tva'],
-                    'num_tva' => $data['tva'] ?? $data['num_tva'],
-                    'rem_relative' => $data['rem_relative'],
-                    'rem_fixe' => $data['rem_fixe'],
-                    'code_comptable_general' => $data['code_comptable_general'],
-                    'code_comptable_fournisseur' => $data['code_comptable_fournisseur'],
-                    'condition_reglement_id' => $data['condition_reglement'],
-                    'mode_reglement_id' => $data['mode_reglement'],
-                ]);
-            }
-
-            if ($data['nature'] === TiersNature::Client) {
-                $tiers->customerProfile()->create([
-                    'tva' => $data['tva'],
-                    'num_tva' => $data['tva'] ?? $data['num_tva'],
-                    'rem_relative' => $data['rem_relative'],
-                    'rem_fixe' => $data['rem_fixe'],
-                    'code_comptable_general' => $data['code_comptable_general'],
-                    'code_comptable_client' => $data['code_comptable_client'],
-                    'condition_reglement_id' => $data['condition_reglement'],
-                    'mode_reglement_id' => $data['mode_reglement'],
-                ]);
-            }
-
-            if (isset($data['iban'])) {
-                $tiers->banks()->create([
-                    'iban' => $data['iban'],
-                    'bic' => $data['bic'],
-                    'bank_id' => 1,
-                    'default' => $data['default'] ?? '0'
-                ]);
-            }
-
-            Notification::make()
-                ->success()
-                ->title("Tiers créé avec succès")
-                ->send();
-
-        } catch (\Exception $exception) {
-            \Log::emergency($exception->getMessage());
-            Notification::make()
-                ->danger()
-                ->title("Erreur lors de la création du Tiers")
-                ->send();
-        }
     }
 
     public function render()

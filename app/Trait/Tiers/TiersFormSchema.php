@@ -7,14 +7,17 @@ use App\Enums\Tiers\TiersType;
 use App\Models\Comptabilite\PlanComptable;
 use App\Models\Core\ConditionReglement;
 use App\Models\Core\ModeReglement;
+use App\Models\Tiers\Tiers;
 use App\Trait\Core\PlanComptableSchema;
 use DB;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Model;
 
 trait TiersFormSchema
 {
@@ -73,39 +76,6 @@ trait TiersFormSchema
                         ->numeric()
                         ->default(0.00),
 
-                    // --- Champs Fournisseur ---
-                    Select::make('code_comptable_general')
-                        ->label("Code Comptable Principal")
-                        ->options(
-                            PlanComptable::query()
-                                ->select('id', DB::raw("CONCAT(code, ' - ', account) as label"))
-                                ->pluck('label', 'id')
-                        )
-                        ->searchable()
-                        ->createOptionForm($this->getFormSchema())
-                        ->required(),
-
-                    Select::make('code_comptable_fournisseur')
-                        ->label("Code Comptable Fournisseur")
-                        ->options(
-                            PlanComptable::query()
-                                ->select('id', DB::raw("CONCAT(code, ' - ', account) as label"))
-                                ->pluck('label', 'id')
-                        )
-                        ->searchable()
-                        ->createOptionForm($this->getFormSchema()),
-
-                    // --- Champs Client ---
-                    Select::make('code_comptable_client')
-                        ->label("Code Comptable Client")
-                        ->options(
-                            PlanComptable::query()
-                                ->select('id', DB::raw("CONCAT(code, ' - ', account) as label"))
-                                ->pluck('label', 'id')
-                        )
-                        ->searchable()
-                        ->createOptionForm($this->getFormSchema()),
-
 
                     Select::make('condition_reglement')
                         ->label('Condition de Réglement')
@@ -133,5 +103,97 @@ trait TiersFormSchema
                         ->label('Compte par défaut')
                 ])
         ];
+    }
+
+    public function submitForm(array $data): void
+    {
+        try {
+            $code_comptable = $data['nature']->value === TiersNature::Client->value ? 232 : 215;
+            $lib = \Str::limit(\Str::upper($data['name']), 3, '');
+
+            if ($data['nature']->value === TiersNature::Fournisseur->value) {
+                $code = PlanComptable::updateOrCreate(
+                    ['code' => '401'.$lib],
+                    [
+                        'code' => '401'.$lib,
+                        'account' => \Str::upper($data['name']),
+                        'type' => 'Payable',
+                        'lettrage' => false,
+                        'principal' => '4',
+                        'initial' => 0
+                    ]
+                );
+            } else {
+                $code = PlanComptable::updateOrCreate(
+                    ['code' => '411'.$lib],
+                    [
+                        'code' => '411'.$lib,
+                        'account' => \Str::upper($data['name']),
+                        'type' => 'Client',
+                        'lettrage' => false,
+                        'principal' => '4',
+                        'initial' => 0
+                    ]
+                );
+            }
+
+            $tiers = Tiers::create(
+                [
+                    'name' => $data['name'],
+                    'nature' => $data['nature'],
+                    'type' => $data['type'],
+                    'siren' => $data['siren'],
+                    'tva' => $data['tva'],
+                    'num_tva' => $data['num_tva'] ?? null,
+                ]
+            );
+
+            if ($data['nature'] === TiersNature::Fournisseur) {
+                $tiers->supplyProfile()->create([
+                    'tva' => $data['tva'],
+                    'num_tva' => $data['tva'] ?? $data['num_tva'],
+                    'rem_relative' => $data['rem_relative'],
+                    'rem_fixe' => $data['rem_fixe'],
+                    'code_comptable_general' => $code_comptable,
+                    'code_comptable_fournisseur' => $code->id,
+                    'condition_reglement_id' => $data['condition_reglement'],
+                    'mode_reglement_id' => $data['mode_reglement'],
+                ]);
+            }
+
+            if ($data['nature'] === TiersNature::Client) {
+                $tiers->customerProfile()->create([
+                    'tva' => $data['tva'],
+                    'num_tva' => $data['tva'] ?? $data['num_tva'],
+                    'rem_relative' => $data['rem_relative'],
+                    'rem_fixe' => $data['rem_fixe'],
+                    'code_comptable_general' => $code_comptable,
+                    'code_comptable_client' => $code->id,
+                    'condition_reglement_id' => $data['condition_reglement'],
+                    'mode_reglement_id' => $data['mode_reglement'],
+                ]);
+            }
+
+            if (isset($data['iban'])) {
+                $tiers->banks()->create([
+                    'iban' => $data['iban'],
+                    'bic' => $data['bic'],
+                    'bank_id' => 1,
+                    'default' => $data['default'] ?? '0'
+                ]);
+            }
+
+            Notification::make()
+                ->success()
+                ->title("Tiers créé avec succès")
+                ->send();
+        } catch (\Exception $exception) {
+            \Log::emergency($exception->getMessage(), [$exception]);
+
+            Notification::make()
+                ->danger()
+                ->title("Erreur lors de la création du Tiers")
+                ->send();
+        }
     }
 }

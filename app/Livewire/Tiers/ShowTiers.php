@@ -47,16 +47,17 @@ class ShowTiers extends Component implements HasSchemas, HasActions, HasInfolist
             ->components([
                 Section::make('Informations Générales')
                     ->icon(Heroicon::InformationCircle)
-                    ->columns(3)
+                    ->columns(4)
                     ->schema([
                         TextEntry::make('name')->label('Raison Social'),
                         TextEntry::make('code_tiers')->label('Code Tiers'),
-                        TextEntry::make('nature')->badge(),
-                        TextEntry::make('type')->badge(),
-                        TextEntry::make('email')->label('Email')->icon(Heroicon::Envelope),
-                        TextEntry::make('phone')->label('Téléphone')->icon(Heroicon::Phone),
-                        TextEntry::make('website')->label('Site Web')->icon(Heroicon::GlobeAlt),
-                        TextEntry::make('notes')->label('Notes')->columnSpanFull(),
+                        TextEntry::make('nature')
+                            ->formatStateUsing(fn (?Model $record) => $record->nature->label())
+                            ->color(fn (?Model $record) => $record->nature->color())
+                            ->badge(),
+                        TextEntry::make('type')
+                            ->formatStateUsing(fn (?Model $record) => $record->type->label())
+                            ->badge(),
                     ]),
 
                 // Section pour le Client
@@ -75,16 +76,14 @@ class ShowTiers extends Component implements HasSchemas, HasActions, HasInfolist
                 // Section pour le Fournisseur
                 Section::make('Profil Fournisseur')
                     ->icon(Heroicon::Truck)
-                    ->columns(3)
+                    ->columns(5)
                     ->visible($this->tiers->nature === TiersNature::Fournisseur)
                     ->schema([
-                        TextEntry::make('customerProfile.num_tva')->label('N° TVA')->visible(fn (?Model $record) => $record->tva),
+                        TextEntry::make('supplyProfile.num_tva')->label('N° TVA')->visible(fn (?Model $record) => $record->tva),
+                        TextEntry::make('supplyProfile.rem_relative')->label('Remise (%)')->suffix('%'),
+                        TextEntry::make('supplyProfile.rem_fixe')->label('Remise (€)')->money('eur'),
                         TextEntry::make('supplyProfile.conditionReglement.name')->label('Condition Règlement'),
                         TextEntry::make('supplyProfile.modeReglement.name')->label('Mode Règlement'),
-                        TextEntry::make('supplyProfile.codeComptableGeneral.account') // Suppose un accesseur 'full_label'
-                        ->label('Cpt. Général'),
-                        TextEntry::make('supplyProfile.codeComptableFournisseur.account') // Suppose un accesseur 'full_label'
-                        ->label('Cpt. Fournisseur'),
                     ]),
             ]);
     }
