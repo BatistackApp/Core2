@@ -8,6 +8,7 @@ use App\Models\Comptabilite\PlanComptable;
 use App\Models\Core\ConditionReglement;
 use App\Models\Core\ModeReglement;
 use App\Models\Tiers\Tiers;
+use App\Services\Siren;
 use App\Trait\Core\PlanComptableSchema;
 use DB;
 use Filament\Forms\Components\Select;
@@ -32,6 +33,45 @@ trait TiersFormSchema
                 ->description('Information de contact')
                 ->icon(Heroicon::InformationCircle)
                 ->schema([
+                    Select::make('siren') // On sauvegarde le numéro SIREN (clé unique)
+                        ->label("Rechercher un établissement")
+                        ->searchable()
+                        ->getSearchResultsUsing(function (string $search, Siren $service) {
+                            $results = $service->searchEntreprise($search)['results'];
+                            \Log::debug("APPEL CALL SIREN API: ", [$results]);
+
+                            return collect($results)
+                                ->mapWithKeys(function ($item) {
+                                    // Construction du label affiché dans la liste
+                                    // Ex: "Vortech Studio (123456789) - 10 Rue de la Paix..."
+                                    $siren = $item['siren'] ?? '';
+                                    $name = $item['nom_complet'] ?? 'Nom inconnu';
+                                    $address = $item['siege']['adresse'] ?? '';
+
+                                    $label = "{$name} ({$siren})";
+                                    if ($address) {
+                                        $label .= " - {$address}";
+                                    }
+
+                                    // Format [ 'ValeurStockée' => 'LabelAffiché' ]
+                                    return [$siren => $label];
+                                })
+                                ->toArray();
+                        })
+                        ->getOptionLabelUsing(function ($value) {
+                            // Ici, on gère l'affichage quand le formulaire est chargé avec une valeur existante.
+                            // Idéalement, vous devriez faire un appel API pour retrouver le nom à partir du SIREN ($value),
+                            // ou stocker le nom dans une autre colonne de votre base.
+                            // Pour l'instant, on affiche le SIREN.
+                            return "Établissement SIREN : " . $value;
+                        })
+                        ->live()
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            // Logique pour retrouver les infos complètes si nécessaire
+                            // $infos = app(Siren::class)->findByNom($state);
+                            // $set('address', $infos->address);
+                        }),
+
                     TextInput::make('name')
                         ->label('Nom')
                         ->required(),
