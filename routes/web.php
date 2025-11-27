@@ -18,7 +18,8 @@ Route::get('/auth/sso/login/{user}', [\App\Http\Controllers\Auth\SsoLoginControl
     ->middleware(['signed', 'web']);
 
 Route::get('test', function () {
-    dd(app(\App\Services\Bridge::class)->get('/providers'));
+    $entreprise = "C2ME";
+    $results = app(\App\Services\Siren::class)->searchEntreprise($entreprise)['results'];
 });
 
 Route::middleware(['auth'])->group(function () {
