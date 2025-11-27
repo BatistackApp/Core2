@@ -14,6 +14,7 @@ use DB;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Wizard\Step;
@@ -142,6 +143,15 @@ trait TiersFormSchema
                     Toggle::make('default')
                         ->label('Compte par défaut')
                 ])
+        ];
+    }
+
+    public function getTiersInfoSchema(): array
+    {
+        return [
+            TextEntry::make('info_bodacc.siren'),
+            TextEntry::make('info_bodacc.activite_principale'),
+            TextEntry::make('info_bodacc.date_creation'),
         ];
     }
 

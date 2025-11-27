@@ -13,6 +13,7 @@ use App\Models\Core\ModeReglement;
 use App\Models\Tiers\Tiers;
 use App\Trait\Tiers\TiersFormSchema;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
@@ -100,23 +101,28 @@ class ListTiers extends Component implements HasActions, HasSchemas, HasTable
                     ->exporter(TiersExporter::class),
             ])
             ->recordActions([
-                Action::make('view')
-                    ->iconButton()
-                    ->icon(Heroicon::Eye)
-                    ->tooltip("Fiche")
-                    ->url(fn (?Model $record) => route('tiers.show', $record)),
+                ActionGroup::make([
+                    Action::make('view')
+                        ->icon(Heroicon::Eye)
+                        ->label("Fiche")
+                        ->url(fn (?Model $record) => route('tiers.show', $record)),
 
-                DeleteAction::make('delete')
-                    ->button()
-                    ->iconButton()
-                    ->icon(Heroicon::Trash)
-                    ->tooltip("Supprimer")
-                    ->requiresConfirmation()
-                    ->modalHeading('Supprimer le Tiers ?')
-                    ->modalDescription("Êtes-vous sûr de vouloir supprimer ce Tiers ?")
-                    ->using(function (?Model $record) {
-                        $record->delete();
-                    })
+                    Action::make('view_bodac')
+                        ->icon(Heroicon::BuildingOffice)
+                        ->label("Information Société")
+                        ->model(fn (?Model $record) => $record)
+                        ->schema($this->getTiersInfoSchema()),
+
+                    DeleteAction::make('delete')
+                        ->icon(Heroicon::Trash)
+                        ->label("Supprimer")
+                        ->requiresConfirmation()
+                        ->modalHeading('Supprimer le Tiers ?')
+                        ->modalDescription("Êtes-vous sûr de vouloir supprimer ce Tiers ?")
+                        ->using(function (?Model $record) {
+                            $record->delete();
+                        })
+                ]),
             ]);
     }
 

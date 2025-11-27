@@ -5,6 +5,7 @@ namespace App\Models\Tiers;
 use App\Enums\Tiers\TiersNature;
 use App\Enums\Tiers\TiersType;
 use App\Observer\Tiers\TiersObserver;
+use App\Services\Siren;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -77,6 +78,12 @@ class Tiers extends Model
             'type' => TiersType::class,     // [cite: TiersType.php]
             'tva' => 'boolean',
         ];
+    }
+
+    public function getInfoBodaccAttribute()
+    {
+        $api = app(Siren::class)->searchEntreprise($this->siren, 1)['results'];
+        return collect($api)->first();
     }
 
 }
