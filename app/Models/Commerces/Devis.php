@@ -46,6 +46,21 @@ class Devis extends Model
         return $this->amount_ht * 20 / 100;
     }
 
+    public function getDateExpiredAttribute()
+    {
+        return $this->date_devis->addDays(app(\App\Settings\CommercesSettings::class)->devis_day_retention);
+    }
+
+    public function getContactFirstAttribute()
+    {
+        return $this->tiers->contacts()->first();
+    }
+
+    public function getAddressFirstAttribute()
+    {
+        return $this->tiers->addresses()->first();
+    }
+
     protected function casts(): array
     {
         return [
