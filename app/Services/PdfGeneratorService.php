@@ -53,8 +53,17 @@ class PdfGeneratorService
         $common = [
             'document_name' => ucfirst(strtolower($type)),
             'type' => $type,
-            'company_name' => Company::first()->name,
-            'logo' => asset('storage/logos/batistack_long_color.png'), // Assurez-vous que l'URL est accessible par le script Node
+            'company' => [
+                'name' => Company::first()->name ?? 'Vortech Studio',
+                'address' => Company::first()->address ?? '123 Avenue de la Innovation',
+                'code_postal' => Company::first()->code_postal ?? '',
+                'ville' => Company::first()->ville ?? '',
+                'pays' => Company::first()->pays ?? '',
+                'siret' => Company::first()->siret ?? '',
+                'ape' => Company::first()->ape ?? '',
+                'email' => Company::first()->email ?? '',
+            ],
+            'logo' => asset('storage/upload/logo-company.png'), // Assurez-vous que l'URL est accessible par le script Node
             'date' => now()->format('d/m/Y'),
         ];
 

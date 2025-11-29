@@ -5,6 +5,7 @@ namespace App\Livewire\Commerces\Devis;
 use App\Enums\Commerces\StatusDevis;
 use App\Models\Commerces\Devis;
 use App\Models\Core\Option;
+use App\Services\PdfGeneratorService;
 use App\Trait\Commerces\DevisForm;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -90,14 +91,6 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    BulkAction::make('generate_pdf')
-                        ->label('Générer le PDF')
-                        ->action(fn (Collection $records) => null),
-
-                    BulkAction::make('fusion_pdf')
-                        ->label('Fusionner les PDF')
-                        ->action(fn (Collection $records) => null),
-
                     BulkAction::make('send')
                         ->label('Envoyer par email')
                         ->action(fn (Collection $records) => null),
@@ -139,6 +132,17 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
                     Action::make('edit')
                         ->label("Editer le devis")
                         ->icon(Heroicon::Pencil),
+
+                    Action::make('print')
+                        ->label("Imprimer le devis")
+                        ->icon(Heroicon::Printer)
+                        ->action(function (?Model $record) {
+                            return app(PdfGeneratorService::class)->generateFromModel(
+                                $record,
+                                'devis',
+                                'true'
+                            );
+                        }),
                 ]),
             ])
             ->filters([

@@ -45,16 +45,17 @@
                 <img src="{{ $logo }}" alt="Logo" class="h-12 mb-4 object-contain max-w-[200px]">
             @else
                 <div class="h-12 flex items-center mb-4">
-                    <span class="text-2xl font-bold tracking-tight text-slate-900">BATISTACK</span>
+                    <span class="text-2xl font-bold tracking-tight text-slate-900">{{ $company_name }}</span>
                 </div>
             @endif
 
             <div class="text-xs text-slate-500 leading-relaxed">
-                <p class="font-bold text-slate-900">{{ $company_name ?? 'Vortech Studio' }}</p>
-                <p>123 Avenue de la Innovation</p>
-                <p>75001 Paris, France</p>
-                <p>SIRET: 123 456 789 00012</p>
-                <p>contact@batistack.io</p>
+                <p class="font-bold text-slate-900">{{ $company['name'] ?? 'NO SOCIETE' }}</p>
+                <p>{{ $company['address'] }}</p>
+                <p>{{ $company['code_postal'] }} {{ $company['ville'] }}, {{ $company['pays'] }}</p>
+                <p>SIRET: {{ $company['siret'] }}</p>
+                <p>APE: {{ $company['ape'] }}</p>
+                <p>{{ $company['email'] }}</p>
             </div>
         </div>
 
