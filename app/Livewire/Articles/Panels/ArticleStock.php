@@ -4,6 +4,7 @@ namespace App\Livewire\Articles\Panels;
 
 use App\Models\Articles\Articles;
 use App\Trait\Articles\ArticlesFormSchema;
+use App\Trait\Core\WarehouseSchema;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
@@ -19,7 +20,7 @@ use Livewire\Component;
 
 class ArticleStock extends Component implements HasActions, HasSchemas, HasTable
 {
-    use InteractsWithActions, InteractsWithSchemas, InteractsWithTable, ArticlesFormSchema;
+    use InteractsWithActions, InteractsWithSchemas, InteractsWithTable, ArticlesFormSchema, WarehouseSchema;
 
     public Articles $article;
 

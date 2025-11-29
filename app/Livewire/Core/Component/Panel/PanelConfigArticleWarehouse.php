@@ -4,6 +4,7 @@ namespace App\Livewire\Core\Component\Panel;
 
 use App\Models\Core\Country;
 use App\Models\Core\Warehouse;
+use App\Trait\Core\WarehouseSchema;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
@@ -25,7 +26,7 @@ use Livewire\Component;
 
 class PanelConfigArticleWarehouse extends Component implements HasTable, HasActions, HasSchemas
 {
-    use InteractsWithTable, InteractsWithActions, InteractsWithSchemas;
+    use InteractsWithTable, InteractsWithActions, InteractsWithSchemas, WarehouseSchema;
 
     public function table(Table $table): Table
     {
@@ -74,34 +75,5 @@ class PanelConfigArticleWarehouse extends Component implements HasTable, HasActi
     public function render()
     {
         return view('livewire.core.component.panel.panel-config-article-warehouse');
-    }
-
-    private function getWarehouseSchema(): array
-    {
-        return [
-            TextInput::make('name')
-                ->label('Nom'),
-
-            TextInput::make('address')
-                ->label('Adresse'),
-
-            Grid::make()
-                ->columns(3)
-                ->schema([
-                    TextInput::make('code_postal')
-                        ->label('Code Postal'),
-
-                    TextInput::make('ville')
-                        ->label('Ville'),
-
-                    Select::make('pays')
-                        ->label('Pays')
-                        ->options(Country::pluck('name', 'name'))
-                        ->searchable(),
-                ]),
-
-            Toggle::make('is_default')
-                ->label("Entrepot par default"),
-        ];
     }
 }
