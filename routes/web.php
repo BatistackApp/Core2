@@ -18,7 +18,10 @@ Route::get('/auth/sso/login/{user}', [\App\Http\Controllers\Auth\SsoLoginControl
     ->middleware(['signed', 'web']);
 
 Route::get('test', function () {
-    dd(app(\App\Services\Bridge::class)->get('/providers'));
+    $entreprise = "951577253";
+    $results = collect(app(\App\Services\Siren::class)->searchEntreprise($entreprise, 1)['results']);
+
+    dd($results->first());
 });
 
 Route::middleware(['auth'])->group(function () {
