@@ -1,3 +1,26 @@
+# [1.4.0](https://github.com/BatistackApp/Core2/compare/v1.3.0...v1.4.0) (2025-11-29)
+
+
+### Bug Fixes
+
+* **devis:** Corriger l'affichage des contacts manquants ([731993e](https://github.com/BatistackApp/Core2/commit/731993eb9f6b1f02f7eba182955c417e50c3b209))
+* simplifier les appels Artisan dans CoreController ([b78adf6](https://github.com/BatistackApp/Core2/commit/b78adf693bea75720b8eec0a2302d4a9fac7744f))
+
+
+### Features
+
+* ajout de la fonctionnalité de téléchargement de logo pour l'entreprise ([6907f12](https://github.com/BatistackApp/Core2/commit/6907f12d6b7e5560f9dd11647888ded312d52c62))
+* ajout de la gestion des conditions générales de vente (develop) ([e83e794](https://github.com/BatistackApp/Core2/commit/e83e794912158ca0ad8f9d90c3bea8f23e5f7a85))
+* ajout du schéma d'entrepôt et intégration dans les composants (develop) ([53c49a4](https://github.com/BatistackApp/Core2/commit/53c49a48e11bb66e4abf4222aebafe8ce9060d42))
+* Améliorations Majeures des Tiers, Génération PDF et Optimisations Générales ([#86](https://github.com/BatistackApp/Core2/issues/86)) ([6648a68](https://github.com/BatistackApp/Core2/commit/6648a684d9ce48ccf2d692a37afda5809606eb62))
+* Intégration de la génération PDF, gestion des informations d'entreprise et des CVG ([#85](https://github.com/BatistackApp/Core2/issues/85)) ([c7f697e](https://github.com/BatistackApp/Core2/commit/c7f697e9933a81b9b53d16cfdc55ca475ddf4329))
+* **pdf:** Ajouter service générique de génération PDF et template ([1334b2d](https://github.com/BatistackApp/Core2/commit/1334b2d57f56c45ba2ecff7ea1166fb8aff45acf))
+* **pdf:** amélioration du générateur de PDF avec des informations sur la société ([153a127](https://github.com/BatistackApp/Core2/commit/153a12710973dffb8a4d7365d9122e7b8d77db7b))
+* **tiers:** Ajouter la génération auto des codes comptables et refactoriser ([39a6f92](https://github.com/BatistackApp/Core2/commit/39a6f92c572debb14b245bfab5fadf1586897cce))
+* **tiers:** Ajouter la récupération et l'affichage des informations BODACC ([a1bd547](https://github.com/BatistackApp/Core2/commit/a1bd547c35e63bd8e1ab99eab020fbb78b29e565))
+* **tiers:** Automatisation, enrichissement et amélioration de la gestion des Tiers ([#84](https://github.com/BatistackApp/Core2/issues/84)) ([7b1f8c3](https://github.com/BatistackApp/Core2/commit/7b1f8c38c37d2af160203092ffdc730149a5337e))
+* **tiers:** Intégrer la recherche d'entreprise par SIREN (develop) ([b8cdfc9](https://github.com/BatistackApp/Core2/commit/b8cdfc9d2abb15ccc05d562f5a2d3fcdb17db2b3))
+
 # [1.3.0](https://github.com/BatistackApp/Core2/compare/v1.2.0...v1.3.0) (2025-11-26)
 
 
