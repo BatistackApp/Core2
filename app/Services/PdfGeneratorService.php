@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Commerces\Devis;
 use App\Models\Core\Company;
+use App\Settings\CommercesSettings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Log;
@@ -24,8 +25,13 @@ class PdfGeneratorService
             ->waitUntilNetworkIdle()
             ->newHeadless();
 
+        if (config('app.env') === 'local') {
+            $browsershot->setNodeBinary('C:\\Program Files\\nodejs\\node.exe'); // Exemple Windows
+            $browsershot->setNpmBinary('C:\\Program Files\\nodejs\\npm.cmd');
+        }
+
         $browsershot->noSandbox();
-        $reference = $data['num_'.strtolower($type)];
+        $reference = $data['reference'];
 
         try {
             $pdfContent = $browsershot->pdf();
@@ -62,6 +68,9 @@ class PdfGeneratorService
                 'siret' => Company::first()->siret ?? '',
                 'ape' => Company::first()->ape ?? '',
                 'email' => Company::first()->email ?? '',
+                'tva' => Company::first()->num_tva ?? '',
+                'rcs' => Company::first()->rcs ?? '',
+                'cvg' => str(app(CommercesSettings::class)->cvg)->markdown()->sanitizeHtml(),
             ],
             'logo' => asset('storage/upload/logo-company.png'), // Assurez-vous que l'URL est accessible par le script Node
             'date' => now()->format('d/m/Y'),
@@ -100,7 +109,7 @@ class PdfGeneratorService
                 'total' => $model->amount_ttc ?? 0,
 
                 // Textes
-                'terms' => "Paiement à réception de facture. Aucun escompte pour paiement anticipé.",
+                'terms' => "Devis gratuit. Les prix TTC sont établis sur la base des taux de TVA en vigueur à la date de remise de l'offre. Toute variation de ces taux sera répercutée sur les prix.",
                 'bank_info' => "FR76 1234 5678 9012 3456 7890 123",
                 'bank_bic' => "AGRFRZP",
             ]);

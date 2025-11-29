@@ -140,7 +140,7 @@ class ListeDevis extends Component implements HasTable, HasSchemas, HasActions
                             return app(PdfGeneratorService::class)->generateFromModel(
                                 $record,
                                 'devis',
-                                'true'
+                                false
                             );
                         }),
                 ]),
