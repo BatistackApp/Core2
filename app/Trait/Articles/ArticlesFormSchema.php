@@ -5,6 +5,7 @@ namespace App\Trait\Articles;
 use App\Enums\Articles\ArticleType;
 use App\Models\Articles\Articles;
 use App\Models\Core\Warehouse;
+use App\Trait\Core\WarehouseSchema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -124,6 +125,8 @@ trait ArticlesFormSchema
             Select::make('warehouse_id')
                 ->label('Entrepot')
                 ->options(Warehouse::all()->pluck('name', 'id'))
+                ->createOptionForm($this->getWarehouseSchema())
+                ->createOptionUsing(fn (array $data) => $this->submitWarehouseSchema($data))
                 ->required(),
         ];
     }

@@ -36,8 +36,8 @@
                         <div class="flex flex-col gap-1 justify-end items-end">
                             <span>{{ $this->devis->date_devis->addDays(app(\App\Settings\CommercesSettings::class)->devis_day_retention)->format('d/m/Y') }}</span>
                             <span class="kt-badge kt-badge-info ms-2">
-                                    Expire {{ $this->devis->date_devis->addDays(app(\App\Settings\CommercesSettings::class)->devis_day_retention)->longRelativeDiffForHumans() }}
-                                </span>
+                                Expire {{ $this->devis->date_devis->addDays(app(\App\Settings\CommercesSettings::class)->devis_day_retention)->longRelativeDiffForHumans() }}
+                            </span>
                         </div>
                     </div>
                     <div class="kt-separator my-2"></div>
@@ -70,7 +70,7 @@
                             <i class="ki-duotone ki-sms me-2"></i>
                             <span>Email</span>
                         </div>
-                        <span>{{ $this->devis->tiers->contacts()->first()->email }}</span>
+                        <span>{{ $this->devis->tiers->contacts()->first()->email ?? 'Aucun contact définie' }}</span>
                     </div>
                     <div class="kt-separator my-2"></div>
                     <div class="flex justify-between items-center">
@@ -78,7 +78,7 @@
                             <i class="ki-duotone ki-phone me-2"></i>
                             <span>Téléphone</span>
                         </div>
-                        <span>{{ $this->devis->tiers->contacts()->first()->tel }}</span>
+                        <span>{{ $this->devis->tiers->contacts()->first()->tel ?? 'Aucun contact définie' }}</span>
                     </div>
                 </div>
             </div>

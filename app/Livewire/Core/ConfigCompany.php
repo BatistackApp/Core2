@@ -9,6 +9,7 @@ use App\Services\VatValidator;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -22,6 +23,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\View\Components\ModalComponent;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ConfigCompany extends Component implements HasSchemas, HasActions
 {
@@ -123,6 +125,15 @@ class ConfigCompany extends Component implements HasSchemas, HasActions
                                 ->label('Vérifier le numéro de TVA')
                                 ->action(fn (Get $get) => $this->verifVat($get('num_tva'))),
                         ])
+                ]),
+
+            Section::make('Logo')
+                ->schema([
+                    FileUpload::make('logo')
+                        ->label('Logo')
+                        ->disk('public')
+                        ->directory('upload')
+                        ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file): string => (string) 'logo-company'.'.'.$file->getClientOriginalExtension()),
                 ])
         ])
         ->statePath('data')
