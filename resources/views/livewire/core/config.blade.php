@@ -2,7 +2,7 @@
     <div class="space-y-3 space-x-3">
         <div class="kt-tabs kt-tabs-line" data-kt-tabs="true">
             <button class="kt-tab-toggle active" data-kt-tab-toggle="#entreprise">Mon Entreprise</button>
-            <button class="kt-tab-toggle" data-kt-tab-toggle="#cvg">Mon Entreprise</button>
+            <button class="kt-tab-toggle" data-kt-tab-toggle="#cvg">CVG</button>
             <button class="kt-tab-toggle" data-kt-tab-toggle="#modules">Mes Modules</button>
             <button class="kt-tab-toggle" data-kt-tab-toggle="#config-article">Articles (Configuration)</button>
             <button class="kt-tab-toggle" data-kt-tab-toggle="#config-commerces">Commerces (Configuration)</button>

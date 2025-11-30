@@ -5,7 +5,7 @@ namespace App\Livewire\Core\Component\Panel;
 use App\Settings\CommercesSettings;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -31,8 +31,8 @@ class PanelConfigCvg extends Component implements HasSchemas, HasActions
             ->statePath('data')
             ->model(CommercesSettings::class)
             ->components([
-                MarkdownEditor::make('cvg')
-                    ->label("Conditions Générales de Vente")
+                RichEditor::make('cvg')
+                    ->label("Contenue des conditions générales de ventes")
                     ->required(),
             ]);
     }
